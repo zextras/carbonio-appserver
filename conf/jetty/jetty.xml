@@ -1,4 +1,11 @@
 <?xml version="1.0"?>
+
+<!--
+SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd">
 <!-- =============================================================== -->
 <!-- Configure the Jetty Server -->
@@ -446,7 +453,7 @@
 				<Arg>
 					<New class="org.eclipse.jetty.rewrite.handler.RewritePatternRule">
 						<Set name="pattern">/autodiscover/*</Set>
-						<Set name="replacement">/service/autodiscover</Set>
+						<Set name="replacement">/service/extension/autodiscover</Set>
 					</New>
 				</Arg>
 			</Call>
@@ -454,7 +461,7 @@
 				<Arg>
 					<New class="org.eclipse.jetty.rewrite.handler.RewritePatternRule">
 						<Set name="pattern">/Autodiscover/*</Set>
-						<Set name="replacement">/service/autodiscover</Set>
+						<Set name="replacement">/service/extension/autodiscover</Set>
 					</New>
 				</Arg>
 			</Call>
@@ -462,7 +469,7 @@
 				<Arg>
 					<New class="org.eclipse.jetty.rewrite.handler.RewritePatternRule">
 						<Set name="pattern">/AutoDiscover/*</Set>
-						<Set name="replacement">/service/autodiscover</Set>
+						<Set name="replacement">/service/extension/autodiscover</Set>
 					</New>
 				</Arg>
 			</Call>
@@ -582,7 +589,7 @@
 		</Set>
 		<Set name="compactPath">true</Set>
 		<Set name="extraClasspath">
-		/opt/zimbra/lib/jars/zimbrasoap.jar,/opt/zimbra/lib/jars/zimbraclient.jar,/opt/zimbra/lib/jars/zimbrastore.jar
+		/opt/zextras/lib/jars/zimbrasoap.jar,/opt/zextras/lib/jars/zimbraclient.jar,/opt/zextras/lib/jars/zimbrastore.jar
 		</Set>
 		<Call name="setAttribute">
 			<Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
@@ -606,7 +613,7 @@
 		</Set>
 		<Set name="persistTempDirectory">true</Set>
 		<Set name="compactPath">true</Set>
-		<Set name="extraClasspath">/opt/zimbra/lib/jars/zimbrasoap.jar,/opt/zimbra/lib/jars/zimbraclient.jar,/opt/zimbra/lib/jars/zimbrastore.jar
+		<Set name="extraClasspath">/opt/zextras/lib/jars/zimbrasoap.jar,/opt/zextras/lib/jars/zimbraclient.jar,/opt/zextras/lib/jars/zimbrastore.jar
 		</Set>
 		<Get name="errorHandler">
 			<Call name="addErrorPage">
@@ -641,7 +648,7 @@
 		<Set name="tempDirectory"><SystemProperty name="jetty.base" default="." />/work/zimbraAdmin
 		</Set>
 		<Set name="compactPath">true</Set>
-		<Set name="extraClasspath">/opt/zimbra/lib/jars/zimbrasoap.jar,/opt/zimbra/lib/jars/zimbraclient.jar,/opt/zimbra/lib/jars/zimbrastore.jar
+		<Set name="extraClasspath">/opt/zextras/lib/jars/zimbrasoap.jar,/opt/zextras/lib/jars/zimbraclient.jar,/opt/zextras/lib/jars/zimbrastore.jar
 		</Set>
         <Get name="sessionHandler">
             <Get name="sessionManager">

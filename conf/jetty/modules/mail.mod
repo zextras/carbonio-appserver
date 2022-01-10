@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
 # Mail Module
 #Adds a specific implementaion of javax.mail API based on client to the classpath.
 #
@@ -6,4 +10,4 @@
 mail
 
 [lib]
-/opt/zimbra/lib/jars/mail*.jar
+/opt/zextras/lib/jars/mail*.jar

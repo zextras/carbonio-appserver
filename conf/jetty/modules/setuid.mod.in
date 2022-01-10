@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
 #
 # Set UID Feature
 #
@@ -6,7 +10,7 @@
 server
 
 [lib]
-lib/setuid/jetty-setuid-java-1.0.3.jar
+lib/setuid/jetty-setuid-java-1.0.4.jar
 
 [xml]
 etc/jetty-setuid.xml

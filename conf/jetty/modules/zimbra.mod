@@ -1,9 +1,12 @@
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
 #
 # Zimbra module
 #
 
 [lib]
 common/lib/*.jar
-/opt/zimbra/lib/jars/zimbracommon.jar
-/opt/zimbra/lib/jars/zimbra-native.jar
-
+/opt/zextras/lib/jars/zimbracommon.jar
+/opt/zextras/lib/jars/native.jar

@@ -1,4 +1,11 @@
 <?xml version="1.0"?>
+
+<!--
+SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <!-- =============================================================== -->
 <!-- Configure the Jetty SetUIDServer                                 -->
 <!-- this configuration file should be used in combination with      -->
@@ -88,7 +95,7 @@
         </Entry>
         <Entry>
           <Item>mailboxd_keystore</Item>
-          <Item><New class="java.lang.String"><Arg><Property name="mailboxd_keystore" default="/opt/zimbra/jetty/etc/keystore"/></Arg></New></Item>
+          <Item><New class="java.lang.String"><Arg><Property name="mailboxd_keystore" default="/opt/zextras/jetty/etc/keystore"/></Arg></New></Item>
         </Entry>
         <Entry>
           <Item>mailboxd_keystore_password</Item>
@@ -107,8 +114,8 @@
       <New class="org.eclipse.jetty.setuid.SetUIDListener">
         <Set name="startServerAsPrivileged"><Property name="jetty.startServerAsPrivileged" default="false"/></Set>
         <Set name="umask">23</Set>
-        <Set name="username">zimbra</Set>
-        <Set name="groupname">zimbra</Set>
+        <Set name="username">zextras</Set>
+        <Set name="groupname">zextras</Set>
   
         <Set name="RLimitNoFiles">
             <New class="org.eclipse.jetty.setuid.RLimit">
