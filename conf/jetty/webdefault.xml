@@ -176,7 +176,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     </init-param>
     <init-param>
       <param-name>precompressed</param-name>
-      <param-value>true</param-value>
+      <param-value>false</param-value>
     </init-param>
     <init-param>
       <param-name>useFileMappedBuffer</param-name>
