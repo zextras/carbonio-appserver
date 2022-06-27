@@ -908,7 +908,7 @@
       <Set name="requestLog">
         <New id="RequestLogImpl" class="org.eclipse.jetty.server.NCSARequestLog">
           <Arg><SystemProperty name="jetty.base" default="."/>/../log/access_log.yyyy_mm_dd</Arg>
-          <Set name="logDateFormat">dd/MMM/yyyy:HH:mm:ss Z</Set>
+          <Set name="logDateFormat">dd/MMM/yyyy:HH:mm:ss:ms Z</Set>
           <Set name="retainDays">30</Set>
           <Set name="append">true</Set>
           <Set name="extended">true</Set>
