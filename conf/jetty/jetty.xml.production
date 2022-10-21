@@ -754,7 +754,7 @@
     %%comment SERVICE:zimbra,<!--%% ZIMBRAWEBAPPEND -->
 
     <!-- ZIMBRAADMINWEBAPPBEGIN %%comment SERVICE:zimbraAdmin,-->%%
-    <New id="zimbraAdmin" class="org.eclipse.jetty.webapp.WebAppContext">
+    <!--<New id="zimbraAdmin" class="org.eclipse.jetty.webapp.WebAppContext">
       <Arg><Ref id="Contexts"/></Arg>
       <Arg><SystemProperty name="jetty.base" default="."/>/webapps/zimbraAdmin</Arg>
       <Arg>%%zimbraAdminURL%%</Arg>
@@ -772,13 +772,13 @@
         </Call>
       </Get>
       <Get name="sessionHandler">
-        <Get name="sessionIdManager"></Get> 
-      </Get> 
+        <Get name="sessionIdManager"></Get>
+      </Get>
       <Call name="setAttribute">
         <Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
 		<Arg>.*/.*jsp-api-[^/]*\.jar$|.*/.*jsp-[^/]*\.jar$|.*/.*taglibs[^/]*\.jar$</Arg>
       </Call>
-    </New>
+    </New>-->
     %%comment SERVICE:zimbraAdmin,<!--%% ZIMBRAADMINWEBAPPEND -->
     
     <New id="zimlet" class="org.eclipse.jetty.webapp.WebAppContext">
