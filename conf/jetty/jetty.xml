@@ -436,22 +436,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<Call name="addRule">
 				<Arg>
 					<New class="org.eclipse.jetty.rewrite.handler.RewritePatternRule">
-						<Set name="pattern">/zimbra/home/*</Set>
-						<Set name="replacement">/service/home</Set>
-					</New>
-				</Arg>
-			</Call>
-			<Call name="addRule">
-				<Arg>
-					<New class="org.eclipse.jetty.rewrite.handler.RewritePatternRule">
-						<Set name="pattern">/zimbra/user/*</Set>
-						<Set name="replacement">/service/user</Set>
-					</New>
-				</Arg>
-			</Call>
-			<Call name="addRule">
-				<Arg>
-					<New class="org.eclipse.jetty.rewrite.handler.RewritePatternRule">
 						<Set name="pattern">/autodiscover/*</Set>
 						<Set name="replacement">/service/extension/autodiscover</Set>
 					</New>
