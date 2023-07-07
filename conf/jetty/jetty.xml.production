@@ -574,15 +574,6 @@
         <Call name="addRule">
 	    <Arg>        
 		<New class="org.eclipse.jetty.rewrite.handler.RewritePatternRule">
-		    <Set name="pattern">/zimlet/*</Set>
-		    <Set name="replacement">/zimlet</Set>
-		    <Set name="terminating">true</Set>
-		</New>
-	    </Arg>
-        </Call>
-        <Call name="addRule">
-	    <Arg>        
-		<New class="org.eclipse.jetty.rewrite.handler.RewritePatternRule">
 		    <Set name="pattern">%%zimbraAdminURL%%/*</Set>
 		    <Set name="replacement">%%zimbraAdminURL%%</Set>
 		    <Set name="terminating">true</Set>
@@ -598,60 +589,6 @@
 		</New>
 	    </Arg>
         </Call>                               
-         
-        <Call name="addRule">
-          <Arg>
-            <New class="org.eclipse.jetty.rewrite.handler.HeaderPatternRule">
-              <Set name="pattern">/modern/.*/bundle.*</Set>
-              <Set name="name">Cache-Control</Set>
-              <Set name="value">Max-Age=31536000,public</Set>
-            </New>
-          </Arg>
-        </Call>
-
-        <Call name="addRule">
-          <Arg>
-            <New class="org.eclipse.jetty.rewrite.handler.HeaderPatternRule">
-              <Set name="pattern">/modern/.*/.*(.chunk.*)</Set>
-              <Set name="name">Cache-Control</Set>
-              <Set name="value">Max-Age=31536000,public</Set>
-            </New>
-          </Arg>
-        </Call>
-
-        <Call name="addRule">
-          <Arg>
-            <New class="org.eclipse.jetty.rewrite.handler.HeaderPatternRule">
-              <Set name="pattern">/modern/.*/fonts/*</Set>
-              <Set name="name">Cache-Control</Set>
-              <Set name="value">Max-Age=31536000,public</Set>
-            </New>
-          </Arg>
-        </Call>
-
-        <Call name="addRule">
-          <Arg>
-            <New class="org.eclipse.jetty.rewrite.handler.HeaderPatternRule">
-              <Set name="pattern">/modern/.*/assets/*</Set>
-              <Set name="name">Cache-Control</Set>
-              <Set name="value">Max-Age=31536000,public</Set>
-            </New>
-          </Arg>
-        </Call>
-
-        <!-- 
-          Rewrites the routes to index.html for all the routes inside modern folder
-          Does not rewrite for the ones who have lesser than 6 characters after the . character in the end (allows files such as .css, .js, .png, .woff2 etc)
-        -->
-        <Call name="addRule">
-          <Arg>
-            <New class="org.eclipse.jetty.rewrite.handler.RewriteRegexRule">
-              <Set name="regex">\/modern\/?((.*)[^.]{6})?$</Set>
-              <Set name="replacement">%%zimbraMailURL%%/modern/index.html</Set>
-              <Set name="terminating">true</Set>
-            </New>
-          </Arg>
-        </Call>
 
 		<!-- assume all other requests handled by zimbra webapp -->
         <Call name="addRule">
@@ -715,88 +652,6 @@
       </Call> 
     </New>
     %%comment SERVICE:service,<!--%% SERVICEWEBAPPEND -->
-    
-    <!-- ZIMBRAWEBAPPBEGIN %%comment SERVICE:zimbra,-->%%
-    <New id="zimbra" class="org.eclipse.jetty.webapp.WebAppContext">
-      <Arg><Ref id="Contexts"/></Arg>
-      <Arg><SystemProperty name="jetty.base" default="."/>/webapps/zimbra</Arg>
-      <Arg>%%zimbraMailURL%%</Arg>
-      <Set name="configurationClasses"><Ref id="plusConfig"/></Set>
-      <Set name="defaultsDescriptor"><SystemProperty name="jetty.base" default="."/>/etc/webdefault.xml</Set>
-      <Set name="tempDirectory"><SystemProperty name="jetty.base" default="."/>/work/zimbra</Set>
-      <Set name="persistTempDirectory">true</Set>
-      <Set name="compactPath">true</Set>
-      <Set name="throwUnavailableOnStartupException">true</Set>
-      <Set name="extraClasspath">/opt/zextras/lib/jars/zimbrasoap.jar,/opt/zextras/lib/jars/zimbraclient.jar,/opt/zextras/lib/jars/zimbrastore.jar</Set>
-      <Get name="errorHandler">
-        <Call name="addErrorPage">
-          <Arg type="int">400</Arg>
-          <Arg type="int">599</Arg>
-          <Arg type="String">/public/error.jsp</Arg>
-        </Call>
-      </Get>
-      <Get name="sessionHandler">
-        <Get name="sessionIdManager"></Get> 
-      </Get> 
-      <Call name="setAttribute">
-        <Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
-		<Arg>.*/.*jsp-api-[^/]*\.jar$|.*/.*jsp-[^/]*\.jar$|.*/.*taglibs[^/]*\.jar$</Arg>
-      </Call>  
-    </New>
-    %%comment SERVICE:zimbra,<!--%% ZIMBRAWEBAPPEND -->
-
-    <!-- ZIMBRAADMINWEBAPPBEGIN %%comment SERVICE:zimbraAdmin,-->%%
-    <!--<New id="zimbraAdmin" class="org.eclipse.jetty.webapp.WebAppContext">
-      <Arg><Ref id="Contexts"/></Arg>
-      <Arg><SystemProperty name="jetty.base" default="."/>/webapps/zimbraAdmin</Arg>
-      <Arg>%%zimbraAdminURL%%</Arg>
-      <Set name="configurationClasses"><Ref id="plusConfig"/></Set>
-      <Set name="defaultsDescriptor"><SystemProperty name="jetty.base" default="."/>/etc/webdefault.xml</Set>
-      <Set name="tempDirectory"><SystemProperty name="jetty.base" default="."/>/work/zimbraAdmin</Set>
-      <Set name="compactPath">true</Set>
-      <Set name="throwUnavailableOnStartupException">true</Set>
-      <Set name="extraClasspath">/opt/zextras/lib/jars/zimbrasoap.jar,/opt/zextras/lib/jars/zimbraclient.jar,/opt/zextras/lib/jars/zimbrastore.jar</Set>
-      <Get name="errorHandler">
-        <Call name="addErrorPage">
-          <Arg type="int">500</Arg>
-          <Arg type="int">599</Arg>
-          <Arg type="String">/public/5xx.html</Arg>
-        </Call>
-      </Get>
-      <Get name="sessionHandler">
-        <Get name="sessionIdManager"></Get>
-      </Get>
-      <Call name="setAttribute">
-        <Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
-		<Arg>.*/.*jsp-api-[^/]*\.jar$|.*/.*jsp-[^/]*\.jar$|.*/.*taglibs[^/]*\.jar$</Arg>
-      </Call>
-    </New>-->
-    %%comment SERVICE:zimbraAdmin,<!--%% ZIMBRAADMINWEBAPPEND -->
-    
-    <New id="zimlet" class="org.eclipse.jetty.webapp.WebAppContext">
-      <Arg><Ref id="Contexts"/></Arg>
-      <Arg><SystemProperty name="jetty.base" default="."/>/webapps/zimlet</Arg>
-      <Arg>/zimlet</Arg>
-      <Set name="configurationClasses"><Ref id="plusConfig"/></Set>
-      <Set name="defaultsDescriptor"><SystemProperty name="jetty.base" default="."/>/etc/webdefault.xml</Set>
-      <Set name="tempDirectory"><SystemProperty name="jetty.base" default="."/>/work/zimlet</Set>
-      <Set name="compactPath">true</Set>
-      <Set name="throwUnavailableOnStartupException">true</Set>
-      <Set name="baseResource">
-        <New class="org.eclipse.jetty.util.resource.ResourceCollection">
-          <Arg>
-            <Array type="String">
-              <Item><SystemProperty name="jetty.base" default="."/>/webapps/zimlet</Item>
-              <Item><SystemProperty name="jetty.base" default="."/>/../zimlets-deployed</Item>
-            </Array>
-          </Arg>
-        </New>
-      </Set>
-      <Call name="setAttribute">
-        <Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
-		<Arg>.*/.*jsp-api-[^/]*\.jar$|.*/.*jsp-[^/]*\.jar$|.*/.*taglibs[^/]*\.jar$</Arg>
-      </Call>
-    </New>
 
     <!-- Configure System and Server classes  -->
     <!-- By default, Jetty7 does not expose all the libraries to WebApps, so customize server/system classes -->
@@ -929,12 +784,6 @@
           <Array type="String">
             <Item>GET</Item>
             <Item>POST</Item>
-          </Array>
-        </Set>
-
-        <Set name="excludedPaths">
-          <Array type="String">
-            <Item>/modern/*</Item>
           </Array>
         </Set>
       </New>

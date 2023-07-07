@@ -482,33 +482,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</New>
 				</Arg>
 			</Call>
-			<Call name="addRule">
-				<Arg>
-					<New class="org.eclipse.jetty.rewrite.handler.RewritePatternRule">
-						<Set name="pattern">/zimlet/*</Set>
-						<Set name="replacement">/zimlet</Set>
-						<Set name="terminating">true</Set>
-					</New>
-				</Arg>
-			</Call>
-			<Call name="addRule">
-				<Arg>
-					<New class="org.eclipse.jetty.rewrite.handler.RewritePatternRule">
-						<Set name="pattern">/zimbraAdmin/*</Set>
-						<Set name="replacement">/zimbraAdmin</Set>
-						<Set name="terminating">true</Set>
-					</New>
-				</Arg>
-			</Call>
-			<Call name="addRule">
-				<Arg>
-					<New class="org.eclipse.jetty.rewrite.handler.RewritePatternRule">
-						<Set name="pattern">/zimbra/*</Set>
-						<Set name="replacement">/</Set>
-						<Set name="terminating">true</Set>
-					</New>
-				</Arg>
-			</Call>
+
 			<!-- assume all other requests handled by zimbra webapp -->
 			<Call name="addRule">
 				<Arg>
@@ -566,101 +540,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<Set name="compactPath">true</Set>
 		<Set name="extraClasspath">
 		/opt/zextras/lib/jars/zimbrasoap.jar,/opt/zextras/lib/jars/zimbraclient.jar,/opt/zextras/lib/jars/zimbrastore.jar
-		</Set>
-		<Call name="setAttribute">
-			<Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
-			<Arg>.*/.*jsp-api-[^/]*\.jar$|.*/.*jsp-[^/]*\.jar$|.*/.*taglibs[^/]*\.jar$</Arg>
-		</Call>
-	</New>
-
-	<New id="zimbra" class="org.eclipse.jetty.webapp.WebAppContext">
-		<Arg>
-			<Ref id="Contexts" />
-		</Arg>
-		<Arg><SystemProperty name="jetty.base" default="." />/webapps/zimbra
-		</Arg>
-		<Arg>/</Arg>
-		<Set name="configurationClasses">
-			<Ref id="plusConfig" />
-		</Set>
-		<Set name="defaultsDescriptor"><SystemProperty name="jetty.base" default="." />/etc/webdefault.xml
-		</Set>
-		<Set name="tempDirectory"><SystemProperty name="jetty.base" default="." />/work/zimbra
-		</Set>
-		<Set name="persistTempDirectory">true</Set>
-		<Set name="compactPath">true</Set>
-		<Set name="extraClasspath">/opt/zextras/lib/jars/zimbrasoap.jar,/opt/zextras/lib/jars/zimbraclient.jar,/opt/zextras/lib/jars/zimbrastore.jar
-		</Set>
-		<Get name="errorHandler">
-			<Call name="addErrorPage">
-				<Arg type="int">400</Arg>
-				<Arg type="int">599</Arg>
-				<Arg type="String">/public/error.jsp</Arg>
-			</Call>
-		</Get>
-        <Get name="sessionHandler">
-            <Get name="sessionManager">
-                <Set name="httpOnly">TRUE</Set>
-            </Get> 
-        </Get> 
-		<Call name="setAttribute">
-			<Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
-			<Arg>.*/.*jsp-api-[^/]*\.jar$|.*/.*jsp-[^/]*\.jar$|.*/.*taglibs[^/]*\.jar$</Arg>
-		</Call>
-	</New>
-
-	<New id="zimbraAdmin" class="org.eclipse.jetty.webapp.WebAppContext">
-		<Arg>
-			<Ref id="Contexts" />
-		</Arg>
-		<Arg><SystemProperty name="jetty.base" default="." />/webapps/zimbraAdmin
-		</Arg>
-		<Arg>/zimbraAdmin</Arg>
-		<Set name="configurationClasses">
-			<Ref id="plusConfig" />
-		</Set>
-		<Set name="defaultsDescriptor"><SystemProperty name="jetty.base" default="." />/etc/webdefault.xml
-		</Set>
-		<Set name="tempDirectory"><SystemProperty name="jetty.base" default="." />/work/zimbraAdmin
-		</Set>
-		<Set name="compactPath">true</Set>
-		<Set name="extraClasspath">/opt/zextras/lib/jars/zimbrasoap.jar,/opt/zextras/lib/jars/zimbraclient.jar,/opt/zextras/lib/jars/zimbrastore.jar
-		</Set>
-        <Get name="sessionHandler">
-            <Get name="sessionManager">
-                <Set name="httpOnly">TRUE</Set>
-            </Get> 
-        </Get> 
-		<Call name="setAttribute">
-			<Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
-			<Arg>.*/.*jsp-api-[^/]*\.jar$|.*/.*jsp-[^/]*\.jar$|.*/.*taglibs[^/]*\.jar$</Arg>
-		</Call>
-	</New>
-
-
-	<New id="zimlet" class="org.eclipse.jetty.webapp.WebAppContext">
-		<Arg>
-			<Ref id="Contexts" />
-		</Arg>
-		<Arg><SystemProperty name="jetty.base" default="." />/webapps/zimlet</Arg>
-		<Arg>/zimlet</Arg>
-		<Set name="configurationClasses">
-			<Ref id="plusConfig" />
-		</Set>
-		<Set name="defaultsDescriptor"><SystemProperty name="jetty.base" default="." />/etc/webdefault.xml</Set>
-		<Set name="tempDirectory"><SystemProperty name="jetty.base" default="." />/work/zimlet
-		</Set>
-		<Set name="compactPath">true</Set>
-		<Set name="baseResource">
-			<New class="org.eclipse.jetty.util.resource.ResourceCollection">
-				<Arg>
-					<Array type="String">
-						<Item><SystemProperty name="jetty.base" default="." />/webapps/zimlet</Item>
-						<Item><SystemProperty name="jetty.base" default="." />/../zimlets-deployed
-						</Item>
-					</Array>
-				</Arg>
-			</New>
 		</Set>
 		<Call name="setAttribute">
 			<Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
@@ -802,12 +681,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<Item>GET</Item>
 							<Item>POST</Item>
 					</Array>
-			</Set>
-			<!-- Modern UI uses build time compression -->
-			<Set name="excludedPaths">
-				<Array type="String">
-					<Item>/modern/*</Item>
-				</Array>
 			</Set>
 		</New>
 	</Set>
