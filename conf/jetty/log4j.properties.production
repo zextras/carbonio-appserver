@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
 #
-# SPDX-License-Identifier: AGPL-3.0-only
+# SPDX-License-Identifier: GPL-2.0-only
 
 # This file is used for jetty logging before service webapp is loaded when
 # log4j switches to the log4j.properties file in /opt/zextras/conf.
