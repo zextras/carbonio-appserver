@@ -27,94 +27,6 @@ depends=(
 )
 
 package() {
-  cd "${srcdir}"/../../
-
-  # carbonio-build
-
-  # rpmconf/Conf/antisamy.xml
-  install -D opt/zextras/conf/antisamy.xml \
-    "${pkgdir}/opt/zextras/conf/antisamy.xml"
-  # rpmconf/Conf/owasp_policy.xml
-  install -D opt/zextras/conf/owasp_policy.xml \
-    "${pkgdir}/opt/zextras/conf/owasp_policy.xml"
-  # rpmconf/Conf/hotspot_compiler
-  install -D opt/zextras/log/.hotspot_compiler \
-    "${pkgdir}/opt/zextras/log/.hotspot_compiler"
-  # rpmconf/Conf/robots.txt
-  cp -r opt/zextras/jetty_base/webapps/zimbra/robots.txt \
-    "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/"
-
-  # carbonio-jetty-conf
-  # conf/jetty/jetty-setuid.xml
-  install -D opt/zextras/jetty_base/etc/jetty-setuid.xml \
-    "${pkgdir}/opt/zextras/jetty_base/etc/jetty-setuid.xml"
-
-  # conf/jetty/jetty.xml.production
-  install -D opt/zextras/jetty_base/etc/jetty.xml.in \
-    "${pkgdir}/opt/zextras/jetty_base/etc/jetty.xml.in"
-
-  # conf/jetty/jettyrc
-  install -D opt/zextras/jetty_base/etc/jettyrc \
-    "${pkgdir}/opt/zextras/jetty_base/etc/jettyrc"
-
-  # conf/jetty/spnego/etc/krb5.ini
-  install -D opt/zextras/jetty_base/etc/krb5.ini.in \
-    "${pkgdir}/opt/zextras/jetty_base/etc/krb5.ini.in"
-
-  # conf/jetty/spnego/etc/spnego.conf
-  install -D opt/zextras/jetty_base/etc/spnego.conf.in \
-    "${pkgdir}/opt/zextras/jetty_base/etc/spnego.conf.in"
-
-  # conf/jetty/spnego/etc/spnego.properties
-  install -D opt/zextras/jetty_base/etc/spnego.properties.in \
-    "${pkgdir}/opt/zextras/jetty_base/etc/spnego.properties.in"
-
-  # conf/jetty/webdefault.xml.production
-  install -D opt/zextras/jetty_base/etc/webdefault.xml \
-    "${pkgdir}/opt/zextras/jetty_base/etc/webdefault.xml"
-
-  # conf/jetty/zimbra.policy.example
-  install -D opt/zextras/jetty_base/etc/zimbra.policy.example \
-    "${pkgdir}/opt/zextras/jetty_base/etc/zimbra.policy.example"
-
-  # conf/jetty/modules/deploy.mod
-  install -D opt/zextras/jetty_base/modules/deploy.mod \
-    "${pkgdir}/opt/zextras/jetty_base/modules/deploy.mod"
-
-  # conf/jetty/modules/mail.mod
-  install -D opt/zextras/jetty_base/modules/mail.mod \
-    "${pkgdir}/opt/zextras/jetty_base/modules/mail.mod"
-
-  # conf/jetty/modules/npn
-  install -D opt/zextras/jetty_base/modules/npn \
-    "${pkgdir}/opt/zextras/jetty_base/modules/npn"
-
-  # conf/jetty/modules/rewrite.mod
-  install -D opt/zextras/jetty_base/modules/rewrite.mod \
-    "${pkgdir}/opt/zextras/jetty_base/modules/rewrite.mod"
-  # conf/jetty/modules/setuid.mod.in
-  install -D opt/zextras/jetty_base/modules/setuid.mod.in \
-    "${pkgdir}/opt/zextras/jetty_base/modules/setuid.mod.in"
-
-  # conf/jetty/modules/zimbra.mod
-  install -D opt/zextras/jetty_base/modules/zimbra.mod \
-    "${pkgdir}/opt/zextras/jetty_base/modules/zimbra.mod"
-
-  # conf/jetty/start.d/setuid.ini.in
-  install -D opt/zextras/jetty_base/start.d/setuid.ini.in \
-    "${pkgdir}/opt/zextras/jetty_base/start.d/setuid.ini.in"
-
-  # this is an emptyfile created by touch
-  install -D opt/zextras/jetty_base/temp/.emptyfile \
-    "${pkgdir}/opt/zextras/jetty_base/temp/.emptyfile"
-
-  # extensions
-  install -D opt/zextras/lib/ext/clamscanner/clamscanner.jar \
-    "${pkgdir}/opt/zextras/lib/ext/clamscanner/clamscanner.jar"
-
-  install -D opt/zextras/lib/ext/nginx-lookup/nginx-lookup.jar \
-    "${pkgdir}/opt/zextras/lib/ext/nginx-lookup/nginx-lookup.jar"
-
 
   mkdir -p "${pkgdir}/opt/zextras/bin/"
   mkdir -p "${pkgdir}/opt/zextras/conf/templates/"
@@ -124,6 +36,73 @@ package() {
   mkdir -p "${pkgdir}/opt/zextras/cache/"
   mkdir -p "${pkgdir}/opt/zextras/incoming/"
   mkdir -p "${pkgdir}/opt/zextras/lib/jars/"
+
+  cd "${srcdir}/../../staging"
+
+  install -D conf/antisamy.xml \
+    "${pkgdir}/opt/zextras/conf/antisamy.xml"
+  install -D conf/owasp_policy.xml \
+    "${pkgdir}/opt/zextras/conf/owasp_policy.xml"
+  install -D conf/hotspot_compiler \
+    "${pkgdir}/opt/zextras/log/.hotspot_compiler"
+  cp -r conf/robots.txt \
+    "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/"
+
+  install -D conf/jetty/jetty-setuid.xml \
+    "${pkgdir}/opt/zextras/jetty_base/etc/jetty-setuid.xml"
+
+  install -D conf/jetty/jetty.xml.production \
+    "${pkgdir}/opt/zextras/jetty_base/etc/jetty.xml.in"
+
+  install -D conf/jetty/jettyrc \
+    "${pkgdir}/opt/zextras/jetty_base/etc/jettyrc"
+
+  install -D conf/jetty/spnego/etc/krb5.ini \
+    "${pkgdir}/opt/zextras/jetty_base/etc/krb5.ini.in"
+
+  install -D conf/jetty/spnego/etc/spnego.conf \
+    "${pkgdir}/opt/zextras/jetty_base/etc/spnego.conf.in"
+
+  install -D conf/jetty/spnego/etc/spnego.properties \
+    "${pkgdir}/opt/zextras/jetty_base/etc/spnego.properties.in"
+
+  install -D conf/jetty/webdefault.xml.production \
+    "${pkgdir}/opt/zextras/jetty_base/etc/webdefault.xml"
+
+  install -D conf/jetty/zimbra.policy.example \
+    "${pkgdir}/opt/zextras/jetty_base/etc/zimbra.policy.example"
+
+  install -D conf/jetty/modules/deploy.mod \
+    "${pkgdir}/opt/zextras/jetty_base/modules/deploy.mod"
+
+  install -D conf/jetty/modules/deploy.mod \
+    "${pkgdir}/opt/zextras/jetty_base/modules/mail.mod"
+
+  install -D conf/jetty/modules/npn \
+    "${pkgdir}/opt/zextras/jetty_base/modules/npn"
+
+  install -D conf/jetty/modules/rewrite.mod \
+    "${pkgdir}/opt/zextras/jetty_base/modules/rewrite.mod"
+
+  install -D conf/jetty/modules/setuid.mod.in \
+    "${pkgdir}/opt/zextras/jetty_base/modules/setuid.mod.in"
+
+  install -D conf/jetty/modules/zimbra.mod \
+    "${pkgdir}/opt/zextras/jetty_base/modules/zimbra.mod"
+
+  install -D conf/jetty/start.d/setuid.ini.in \
+    "${pkgdir}/opt/zextras/jetty_base/start.d/setuid.ini.in"
+
+  install -D conf/.emptyfile \
+    "${pkgdir}/opt/zextras/jetty_base/temp/.emptyfile"
+
+  # extensions
+  install -D jars/zm-clam-scanner-store-22.3.0.jar \
+    "${pkgdir}/opt/zextras/lib/ext/clamscanner/clamscanner.jar"
+
+  install -D jars/zm-nginx-lookup-store-23.3.0.jar \
+    "${pkgdir}/opt/zextras/lib/ext/nginx-lookup/nginx-lookup.jar"
+
 
 }
 
