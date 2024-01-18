@@ -54,7 +54,6 @@ pipeline {
                             }
                             steps {
                                 unstash 'staging'
-                                sh 'cp -r staging /tmp'
                                 sh 'sudo yap build rocky . -s'
                                 stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-rpm'
                             }
