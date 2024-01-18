@@ -9,7 +9,7 @@ TARGET=$1
 
 if [[ ${TARGET} == '' ||  ${TARGET} == 'ubuntu-focal' ]]
 then
-  docker run --entrypoint=yap -it -v $(pwd)/artifacts:/artifacts -v $(pwd):/tmp/staging registry.dev.zextras.com/jenkins/pacur/ubuntu-20.04:v2 build ubuntu-focal /tmp/staging/package
+  docker run --entrypoint=yap -it -v $(pwd)/artifacts:/artifacts -v $(pwd):/tmp/staging registry.dev.zextras.com/jenkins/pacur/ubuntu-20.04:v2 build ubuntu-focal -c /tmp/staging/package
 else
   if [[ ${TARGET} == 'rocky-8' ]]
   then

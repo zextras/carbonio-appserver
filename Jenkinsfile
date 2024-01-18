@@ -24,11 +24,6 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Download JARs') {
-            steps {
-                sh 'make download-jars'
-            }
-        }
         stage('Stash') {
             steps {
                 sh 'mkdir staging'

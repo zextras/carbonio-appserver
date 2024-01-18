@@ -26,6 +26,16 @@ depends=(
   "carbonio-prometheus-mysqld-exporter"
 )
 
+source=(
+  "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-clam-scanner-store/22.3.0/zm-clam-scanner-store-22.3.0.jar"
+  "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-nginx-lookup-store/23.3.0/zm-nginx-lookup-store-23.3.0.jar"
+)
+
+sha256sums=(
+'SKIP'
+'SKIP'
+)
+
 package() {
 
   mkdir -p "${pkgdir}/opt/zextras/bin/"
@@ -78,8 +88,8 @@ package() {
   install -D conf/jetty/modules/deploy.mod \
     "${pkgdir}/opt/zextras/jetty_base/modules/mail.mod"
 
-  install -D conf/jetty/modules/npn \
-    "${pkgdir}/opt/zextras/jetty_base/modules/npn"
+  install -D conf/jetty/modules/npn/*.mod \
+    -t "${pkgdir}/opt/zextras/jetty_base/modules/npn"
 
   install -D conf/jetty/modules/rewrite.mod \
     "${pkgdir}/opt/zextras/jetty_base/modules/rewrite.mod"
@@ -97,12 +107,11 @@ package() {
     "${pkgdir}/opt/zextras/jetty_base/temp/.emptyfile"
 
   # extensions
-  install -D jars/zm-clam-scanner-store-22.3.0.jar \
-    "${pkgdir}/opt/zextras/lib/ext/clamscanner/clamscanner.jar"
+  install -D ${srcdir}/zm-clam-scanner-store-22.3.0.jar \
+    -t "${pkgdir}/opt/zextras/lib/ext/clamscanner/"
 
-  install -D jars/zm-nginx-lookup-store-23.3.0.jar \
-    "${pkgdir}/opt/zextras/lib/ext/nginx-lookup/nginx-lookup.jar"
-
+  install -D ${srcdir}/zm-nginx-lookup-store-23.3.0.jar \
+    -t "${pkgdir}/opt/zextras/lib/ext/nginx-lookup/"
 
 }
 
