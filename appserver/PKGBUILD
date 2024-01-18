@@ -47,7 +47,7 @@ package() {
   mkdir -p "${pkgdir}/opt/zextras/incoming/"
   mkdir -p "${pkgdir}/opt/zextras/lib/jars/"
 
-  cd "${srcdir}/../../staging"
+  cd "${srcdir}/.."
 
   install -D conf/antisamy.xml \
     "${pkgdir}/opt/zextras/conf/antisamy.xml"
@@ -60,49 +60,34 @@ package() {
 
   install -D conf/jetty/jetty-setuid.xml \
     "${pkgdir}/opt/zextras/jetty_base/etc/jetty-setuid.xml"
-
   install -D conf/jetty/jetty.xml.production \
     "${pkgdir}/opt/zextras/jetty_base/etc/jetty.xml.in"
-
   install -D conf/jetty/jettyrc \
     "${pkgdir}/opt/zextras/jetty_base/etc/jettyrc"
-
   install -D conf/jetty/spnego/etc/krb5.ini \
     "${pkgdir}/opt/zextras/jetty_base/etc/krb5.ini.in"
-
   install -D conf/jetty/spnego/etc/spnego.conf \
     "${pkgdir}/opt/zextras/jetty_base/etc/spnego.conf.in"
-
   install -D conf/jetty/spnego/etc/spnego.properties \
     "${pkgdir}/opt/zextras/jetty_base/etc/spnego.properties.in"
-
   install -D conf/jetty/webdefault.xml.production \
     "${pkgdir}/opt/zextras/jetty_base/etc/webdefault.xml"
-
   install -D conf/jetty/zimbra.policy.example \
     "${pkgdir}/opt/zextras/jetty_base/etc/zimbra.policy.example"
-
   install -D conf/jetty/modules/deploy.mod \
     "${pkgdir}/opt/zextras/jetty_base/modules/deploy.mod"
-
   install -D conf/jetty/modules/deploy.mod \
     "${pkgdir}/opt/zextras/jetty_base/modules/mail.mod"
-
   install -D conf/jetty/modules/npn/*.mod \
     -t "${pkgdir}/opt/zextras/jetty_base/modules/npn"
-
   install -D conf/jetty/modules/rewrite.mod \
     "${pkgdir}/opt/zextras/jetty_base/modules/rewrite.mod"
-
   install -D conf/jetty/modules/setuid.mod.in \
     "${pkgdir}/opt/zextras/jetty_base/modules/setuid.mod.in"
-
   install -D conf/jetty/modules/zimbra.mod \
     "${pkgdir}/opt/zextras/jetty_base/modules/zimbra.mod"
-
   install -D conf/jetty/start.d/setuid.ini.in \
     "${pkgdir}/opt/zextras/jetty_base/start.d/setuid.ini.in"
-
   install -D conf/.emptyfile \
     "${pkgdir}/opt/zextras/jetty_base/temp/.emptyfile"
 
@@ -112,7 +97,6 @@ package() {
 
   install -D ${srcdir}/zm-nginx-lookup-store-23.3.0.jar \
     -t "${pkgdir}/opt/zextras/lib/ext/nginx-lookup/"
-
 }
 
 preinst() {

@@ -22,13 +22,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
-            }
-        }
-        stage('Stash') {
-            steps {
-                sh 'mkdir staging'
-                sh 'cp -r package conf jars staging'
-                stash includes: 'staging/**', name: 'staging'
+                stash includes: '**', name: 'staging'
             }
         }
 
@@ -42,8 +36,7 @@ pipeline {
                             }
                             steps {
                                 unstash 'staging'
-                                sh 'cp -r staging /tmp'
-                                sh 'sudo yap build ubuntu /tmp/staging/package'
+                                sh 'sudo yap build ubuntu . -s'
                                 stash includes: 'artifacts/', name: 'artifacts-deb'
                             }
                             post {
@@ -62,7 +55,7 @@ pipeline {
                             steps {
                                 unstash 'staging'
                                 sh 'cp -r staging /tmp'
-                                sh 'sudo yap build rocky /tmp/staging/package'
+                                sh 'sudo yap build rocky . -s'
                                 stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-rpm'
                             }
                             post {
