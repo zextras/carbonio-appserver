@@ -11,7 +11,7 @@ pipeline {
     }
     agent {
         node {
-            label 'base-agent-v1'
+            label 'base-agent-v2'
         }
     }
     environment {
