@@ -24,6 +24,7 @@ depends=(
   "carbonio-jetty-distribution"
   "carbonio-mariadb"
   "carbonio-prometheus-mysqld-exporter"
+  "carbonio-zal"
 )
 
 source=(
