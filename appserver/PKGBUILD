@@ -1,0 +1,142 @@
+pkgname="carbonio-appserver"
+pkgver="4.1.0"
+pkgrel="1"
+pkgdesc="An open-source, community-driven email server"
+maintainer="Zextras <packages@zextras.com>"
+copyright=(
+  "2022-2024, Zextras <https://www.zextras.com>"
+  "2022, Synacor, Inc."
+)
+license=(
+  "GPL-2.0-only"
+)
+url="https://github.com/zextras"
+section="mail"
+priority="optional"
+arch=('x86_64')
+depends=(
+  "carbonio-appserver-conf"
+  "carbonio-appserver-service"
+  "carbonio-appserver-db"
+  "carbonio-appserver-store-libs"
+  "carbonio-appserver-war"
+  "carbonio-core"
+  "carbonio-jetty-distribution"
+  "carbonio-mariadb"
+  "carbonio-prometheus-mysqld-exporter"
+  "carbonio-zal"
+)
+
+source=(
+  "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-clam-scanner-store/22.3.0/zm-clam-scanner-store-22.3.0.jar"
+  "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-nginx-lookup-store/23.3.0/zm-nginx-lookup-store-23.3.0.jar"
+)
+
+sha256sums=(
+'SKIP'
+'SKIP'
+)
+
+package() {
+
+  mkdir -p "${pkgdir}/opt/zextras/bin/"
+  mkdir -p "${pkgdir}/opt/zextras/conf/templates/"
+  mkdir -p "${pkgdir}/opt/zextras/jetty_base/common/endorsed/"
+  mkdir -p "${pkgdir}/opt/zextras/jetty_base/common/lib/"
+  mkdir -p "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/"
+  mkdir -p "${pkgdir}/opt/zextras/cache/"
+  mkdir -p "${pkgdir}/opt/zextras/incoming/"
+  mkdir -p "${pkgdir}/opt/zextras/lib/jars/"
+
+  cd "${srcdir}/.."
+
+  install -D conf/antisamy.xml \
+    "${pkgdir}/opt/zextras/conf/antisamy.xml"
+  install -D conf/owasp_policy.xml \
+    "${pkgdir}/opt/zextras/conf/owasp_policy.xml"
+  install -D conf/hotspot_compiler \
+    "${pkgdir}/opt/zextras/log/.hotspot_compiler"
+  cp -r conf/robots.txt \
+    "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/"
+
+  install -D conf/jetty/jetty-setuid.xml \
+    "${pkgdir}/opt/zextras/jetty_base/etc/jetty-setuid.xml"
+  install -D conf/jetty/jetty.xml.production \
+    "${pkgdir}/opt/zextras/jetty_base/etc/jetty.xml.in"
+  install -D conf/jetty/jettyrc \
+    "${pkgdir}/opt/zextras/jetty_base/etc/jettyrc"
+  install -D conf/jetty/spnego/etc/krb5.ini \
+    "${pkgdir}/opt/zextras/jetty_base/etc/krb5.ini.in"
+  install -D conf/jetty/spnego/etc/spnego.conf \
+    "${pkgdir}/opt/zextras/jetty_base/etc/spnego.conf.in"
+  install -D conf/jetty/spnego/etc/spnego.properties \
+    "${pkgdir}/opt/zextras/jetty_base/etc/spnego.properties.in"
+  install -D conf/jetty/webdefault.xml.production \
+    "${pkgdir}/opt/zextras/jetty_base/etc/webdefault.xml"
+  install -D conf/jetty/zimbra.policy.example \
+    "${pkgdir}/opt/zextras/jetty_base/etc/zimbra.policy.example"
+  install -D conf/jetty/modules/deploy.mod \
+    "${pkgdir}/opt/zextras/jetty_base/modules/deploy.mod"
+  install -D conf/jetty/modules/deploy.mod \
+    "${pkgdir}/opt/zextras/jetty_base/modules/mail.mod"
+  install -D conf/jetty/modules/npn/*.mod \
+    -t "${pkgdir}/opt/zextras/jetty_base/modules/npn"
+  install -D conf/jetty/modules/rewrite.mod \
+    "${pkgdir}/opt/zextras/jetty_base/modules/rewrite.mod"
+  install -D conf/jetty/modules/setuid.mod.in \
+    "${pkgdir}/opt/zextras/jetty_base/modules/setuid.mod.in"
+  install -D conf/jetty/modules/zimbra.mod \
+    "${pkgdir}/opt/zextras/jetty_base/modules/zimbra.mod"
+  install -D conf/jetty/start.d/setuid.ini.in \
+    "${pkgdir}/opt/zextras/jetty_base/start.d/setuid.ini.in"
+  install -D conf/.emptyfile \
+    "${pkgdir}/opt/zextras/jetty_base/temp/.emptyfile"
+
+  # extensions
+  install -D ${srcdir}/zm-clam-scanner-store-22.3.0.jar \
+    -t "${pkgdir}/opt/zextras/lib/ext/clamscanner/"
+
+  install -D ${srcdir}/zm-nginx-lookup-store-23.3.0.jar \
+    -t "${pkgdir}/opt/zextras/lib/ext/nginx-lookup/"
+}
+
+preinst() {
+  if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
+    rm -rf /opt/zextras/mailboxd/work/zimbra >/dev/null 2>&1
+  fi
+
+  if [ -d "/opt/zextras/mailboxd/work/zimbraAdmin" ]; then
+    rm -rf /opt/zextras/mailboxd/work/zimbraAdmin >/dev/null 2>&1
+  fi
+}
+
+postinst() {
+  H=$(hostname -s)
+
+  if [ -f /opt/zextras/db/db.sql ]; then
+    mv /opt/zextras/db/db.sql /opt/zextras/db/db.sql.in
+    sed -e "/server.hostname/ s/local/$H/" /opt/zextras/db/db.sql.in >/opt/zextras/db/db.sql
+    chown zextras:zextras /opt/zextras/db/db.sql*
+    chmod 440 /opt/zextras/db/db.sql*
+  fi
+
+  (cd /opt/zextras && rm -f jetty && ln -s jetty_base jetty)
+  (cd /opt/zextras && rm -f mailboxd && ln -s jetty_base mailboxd)
+
+  mkdir -p /opt/zextras/mailboxd/logs
+  chown zextras:zextras /opt/zextras/mailboxd/logs
+
+  mkdir -p /opt/zextras/redolog
+  mkdir -p /opt/zextras/store
+  mkdir -p /opt/zextras/index
+  mkdir -p /opt/zextras/backup
+  chown zextras:zextras /opt/zextras/redolog /opt/zextras/store /opt/zextras/index /opt/zextras/backup
+
+  if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
+    find /opt/zextras/mailboxd/work/zimbra -exec touch {} \; 2>/dev/null
+  fi
+
+  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
+    /opt/zextras/libexec/zmfixperms
+  fi
+}
