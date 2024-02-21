@@ -38,8 +38,6 @@ sha256sums=(
 )
 
 package() {
-
-
   mkdir -p "${pkgdir}/opt/zextras/bin/"
   mkdir -p "${pkgdir}/opt/zextras/conf/templates/"
   mkdir -p "${pkgdir}/opt/zextras/jetty_base/common/endorsed/"
@@ -104,7 +102,6 @@ package() {
 
   install -D conf/.emptyfile \
     "${pkgdir}/opt/zextras/jetty_base/temp/.emptyfile"
-
 
    install -D ${srcdir}/zm-clam-scanner-store-22.3.0.jar \
      -t "${pkgdir}/opt/zextras/lib/ext/clamscanner/"
