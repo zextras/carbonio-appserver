@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver"
-pkgver="4.1.0"
+pkgver="4.1.1"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"
@@ -38,7 +38,6 @@ sha256sums=(
 )
 
 package() {
-
   mkdir -p "${pkgdir}/opt/zextras/bin/"
   mkdir -p "${pkgdir}/opt/zextras/conf/templates/"
   mkdir -p "${pkgdir}/opt/zextras/jetty_base/common/endorsed/"
@@ -52,52 +51,69 @@ package() {
 
   install -D conf/antisamy.xml \
     "${pkgdir}/opt/zextras/conf/antisamy.xml"
+
   install -D conf/owasp_policy.xml \
     "${pkgdir}/opt/zextras/conf/owasp_policy.xml"
-  install -D conf/hotspot_compiler \
-    "${pkgdir}/opt/zextras/log/.hotspot_compiler"
-  cp -r conf/robots.txt \
-    "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/"
 
   install -D conf/jetty/jetty-setuid.xml \
     "${pkgdir}/opt/zextras/jetty_base/etc/jetty-setuid.xml"
+
   install -D conf/jetty/jetty.xml.production \
     "${pkgdir}/opt/zextras/jetty_base/etc/jetty.xml.in"
+
   install -D conf/jetty/jettyrc \
     "${pkgdir}/opt/zextras/jetty_base/etc/jettyrc"
+
   install -D conf/jetty/spnego/etc/krb5.ini \
     "${pkgdir}/opt/zextras/jetty_base/etc/krb5.ini.in"
+
   install -D conf/jetty/spnego/etc/spnego.conf \
     "${pkgdir}/opt/zextras/jetty_base/etc/spnego.conf.in"
+
   install -D conf/jetty/spnego/etc/spnego.properties \
     "${pkgdir}/opt/zextras/jetty_base/etc/spnego.properties.in"
-  install -D conf/jetty/webdefault.xml.production \
+
+  install -D conf/jetty/webdefault.xml \
     "${pkgdir}/opt/zextras/jetty_base/etc/webdefault.xml"
+
   install -D conf/jetty/zimbra.policy.example \
     "${pkgdir}/opt/zextras/jetty_base/etc/zimbra.policy.example"
+
   install -D conf/jetty/modules/deploy.mod \
     "${pkgdir}/opt/zextras/jetty_base/modules/deploy.mod"
-  install -D conf/jetty/modules/deploy.mod \
+
+  install -D conf/jetty/modules/mail.mod \
     "${pkgdir}/opt/zextras/jetty_base/modules/mail.mod"
-  install -D conf/jetty/modules/npn/*.mod \
-    -t "${pkgdir}/opt/zextras/jetty_base/modules/npn"
+
+  install -D conf/jetty/modules/npn/npn-1.7.0_51.mod \
+    "${pkgdir}/opt/zextras/jetty_base/modules/npn"
+
   install -D conf/jetty/modules/rewrite.mod \
     "${pkgdir}/opt/zextras/jetty_base/modules/rewrite.mod"
+
   install -D conf/jetty/modules/setuid.mod.in \
     "${pkgdir}/opt/zextras/jetty_base/modules/setuid.mod.in"
+
   install -D conf/jetty/modules/zimbra.mod \
     "${pkgdir}/opt/zextras/jetty_base/modules/zimbra.mod"
+
   install -D conf/jetty/start.d/setuid.ini.in \
     "${pkgdir}/opt/zextras/jetty_base/start.d/setuid.ini.in"
+
   install -D conf/.emptyfile \
     "${pkgdir}/opt/zextras/jetty_base/temp/.emptyfile"
 
-  # extensions
-  install -D ${srcdir}/zm-clam-scanner-store-22.3.0.jar \
-    -t "${pkgdir}/opt/zextras/lib/ext/clamscanner/"
+   install -D ${srcdir}/zm-clam-scanner-store-22.3.0.jar \
+     -t "${pkgdir}/opt/zextras/lib/ext/clamscanner/"
 
-  install -D ${srcdir}/zm-nginx-lookup-store-23.3.0.jar \
-    -t "${pkgdir}/opt/zextras/lib/ext/nginx-lookup/"
+   install -D ${srcdir}/zm-nginx-lookup-store-23.3.0.jar \
+     -t "${pkgdir}/opt/zextras/lib/ext/nginx-lookup/"
+
+  install -D conf/hotspot_compiler \
+    "${pkgdir}/opt/zextras/log/.hotspot_compiler"
+
+  install -D conf/robots.txt \
+    -t "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/"
 }
 
 preinst() {
