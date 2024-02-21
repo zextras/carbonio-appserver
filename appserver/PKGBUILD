@@ -87,8 +87,8 @@ package() {
   install -D conf/jetty/modules/mail.mod \
     "${pkgdir}/opt/zextras/jetty_base/modules/mail.mod"
 
-  install -D conf/jetty/modules/npn/* \
-    -t "${pkgdir}/opt/zextras/jetty_base/modules/npn"
+  install -D conf/jetty/modules/npn \
+    "${pkgdir}/opt/zextras/jetty_base/modules/npn"
 
   install -D conf/jetty/modules/rewrite.mod \
     "${pkgdir}/opt/zextras/jetty_base/modules/rewrite.mod"
