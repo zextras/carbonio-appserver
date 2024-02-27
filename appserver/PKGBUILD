@@ -29,7 +29,7 @@ depends=(
 
 source=(
   "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-clam-scanner-store/22.3.0/zm-clam-scanner-store-22.3.0.jar"
-  "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-nginx-lookup-store/23.3.0/zm-nginx-lookup-store-23.3.0.jar"
+  "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-nginx-lookup-store/24.3.0/zm-nginx-lookup-store-24.3.0.jar"
 )
 
 sha256sums=(
@@ -106,7 +106,7 @@ package() {
    install -D ${srcdir}/zm-clam-scanner-store-22.3.0.jar \
      -t "${pkgdir}/opt/zextras/lib/ext/clamscanner/"
 
-   install -D ${srcdir}/zm-nginx-lookup-store-23.3.0.jar \
+   install -D ${srcdir}/zm-nginx-lookup-store-24.3.0.jar \
      -t "${pkgdir}/opt/zextras/lib/ext/nginx-lookup/"
 
   install -D conf/hotspot_compiler \
