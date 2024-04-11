@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver"
-pkgver="4.1.1"
+pkgver="4.1.2"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"
@@ -29,12 +29,14 @@ depends=(
 
 source=(
   "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-clam-scanner-store/22.3.0/zm-clam-scanner-store-22.3.0.jar"
-  "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-nginx-lookup-store/23.3.0/zm-nginx-lookup-store-23.3.0.jar"
+  "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-nginx-lookup-store/24.5.0/zm-nginx-lookup-store-24.5.0.jar"
+  "${pkgname}.target"
 )
 
 sha256sums=(
-'SKIP'
-'SKIP'
+  'SKIP'
+  'SKIP'
+  '4723c403eb7d28d3158983999dd8adac8716870a63ff75e98744916f9efe64e4'
 )
 
 package() {
@@ -103,17 +105,31 @@ package() {
   install -D conf/.emptyfile \
     "${pkgdir}/opt/zextras/jetty_base/temp/.emptyfile"
 
-   install -D ${srcdir}/zm-clam-scanner-store-22.3.0.jar \
-     -t "${pkgdir}/opt/zextras/lib/ext/clamscanner/"
+  install -D ${srcdir}/zm-clam-scanner-store-22.3.0.jar \
+    -t "${pkgdir}/opt/zextras/lib/ext/clamscanner/"
 
-   install -D ${srcdir}/zm-nginx-lookup-store-23.3.0.jar \
-     -t "${pkgdir}/opt/zextras/lib/ext/nginx-lookup/"
+  install -D ${srcdir}/zm-nginx-lookup-store-24.5.0.jar \
+    -t "${pkgdir}/opt/zextras/lib/ext/nginx-lookup/"
 
   install -D conf/hotspot_compiler \
     "${pkgdir}/opt/zextras/log/.hotspot_compiler"
 
   install -D conf/robots.txt \
     -t "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/"
+
+  # systemd unit
+  mkdir -p "${pkgdir}/lib/systemd/system/${pkgname}.target.wants"
+  install -Dm 644 "${srcdir}/${pkgname}.target" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target"
+
+  ln -sf "/lib/systemd/system/carbonio-configd.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-configd.service"
+  ln -sf "/lib/systemd/system/carbonio-stats" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-stats.service"
+  ln -sf "/lib/systemd/system/${pkgname}.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/${pkgname}.service"
+  ln -sf "/lib/systemd/system/${pkgname}-db.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/${pkgname}-db.service"
 }
 
 preinst() {
