@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver"
-pkgver="4.1.1"
+pkgver="4.1.2"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"
@@ -29,7 +29,7 @@ depends=(
 
 source=(
   "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-clam-scanner-store/22.3.0/zm-clam-scanner-store-22.3.0.jar"
-  "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-nginx-lookup-store/24.3.0/zm-nginx-lookup-store-24.3.0.jar"
+  "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-nginx-lookup-store/24.5.0/zm-nginx-lookup-store-24.5.0.jar"
   "${pkgname}.target"
 )
 
@@ -108,7 +108,7 @@ package() {
   install -D ${srcdir}/zm-clam-scanner-store-22.3.0.jar \
     -t "${pkgdir}/opt/zextras/lib/ext/clamscanner/"
 
-  install -D ${srcdir}/zm-nginx-lookup-store-24.3.0.jar \
+  install -D ${srcdir}/zm-nginx-lookup-store-24.5.0.jar \
     -t "${pkgdir}/opt/zextras/lib/ext/nginx-lookup/"
 
   install -D conf/hotspot_compiler \
