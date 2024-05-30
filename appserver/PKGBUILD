@@ -33,7 +33,7 @@ source=(
 sha256sums=(
   'SKIP'
   'SKIP'
-  '4723c403eb7d28d3158983999dd8adac8716870a63ff75e98744916f9efe64e4'
+  'c067736a3d918bc1ca4cf9139b64776628287ccf6bb34ba9c09053a1741c4c6d'
 )
 
 package() {
@@ -70,7 +70,7 @@ package() {
 
   ln -sf "/lib/systemd/system/carbonio-configd.service" \
     "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-configd.service"
-  ln -sf "/lib/systemd/system/carbonio-stats" \
+  ln -sf "/lib/systemd/system/carbonio-stats.service" \
     "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-stats.service"
   ln -sf "/lib/systemd/system/${pkgname}.service" \
     "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/${pkgname}.service"
@@ -88,7 +88,7 @@ preinst() {
   fi
 }
 
-postinst() {
+postinst__apt() {
   H=$(hostname -s)
 
   if [ -f /opt/zextras/db/db.sql ]; then
@@ -116,5 +116,84 @@ postinst() {
 
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
+  fi
+}
+
+postinst__rocky_8() {
+  H=$(hostname -s)
+
+  if [ -f /opt/zextras/db/db.sql ]; then
+    mv /opt/zextras/db/db.sql /opt/zextras/db/db.sql.in
+    sed -e "/server.hostname/ s/local/$H/" /opt/zextras/db/db.sql.in >/opt/zextras/db/db.sql
+    chown zextras:zextras /opt/zextras/db/db.sql*
+    chmod 440 /opt/zextras/db/db.sql*
+  fi
+
+  (cd /opt/zextras && rm -f jetty && ln -s jetty_base jetty)
+  (cd /opt/zextras && rm -f mailboxd && ln -s jetty_base mailboxd)
+
+  mkdir -p /opt/zextras/mailboxd/logs
+  chown zextras:zextras /opt/zextras/mailboxd/logs
+
+  mkdir -p /opt/zextras/redolog
+  mkdir -p /opt/zextras/store
+  mkdir -p /opt/zextras/index
+  mkdir -p /opt/zextras/backup
+  chown zextras:zextras /opt/zextras/redolog /opt/zextras/store /opt/zextras/index /opt/zextras/backup
+
+  if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
+    find /opt/zextras/mailboxd/work/zimbra -exec touch {} \; 2>/dev/null
+  fi
+
+  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
+    /opt/zextras/libexec/zmfixperms
+  fi
+}
+
+postinst__rocky_9() {
+  H=$(hostname -s)
+
+  if [ -f /opt/zextras/db/db.sql ]; then
+    mv /opt/zextras/db/db.sql /opt/zextras/db/db.sql.in
+    sed -e "/server.hostname/ s/local/$H/" /opt/zextras/db/db.sql.in >/opt/zextras/db/db.sql
+    chown zextras:zextras /opt/zextras/db/db.sql*
+    chmod 440 /opt/zextras/db/db.sql*
+  fi
+
+  (cd /opt/zextras && rm -f jetty && ln -s jetty_base jetty)
+  (cd /opt/zextras && rm -f mailboxd && ln -s jetty_base mailboxd)
+
+  mkdir -p /opt/zextras/mailboxd/logs
+  chown zextras:zextras /opt/zextras/mailboxd/logs
+
+  mkdir -p /opt/zextras/redolog
+  mkdir -p /opt/zextras/store
+  mkdir -p /opt/zextras/index
+  mkdir -p /opt/zextras/backup
+  chown zextras:zextras /opt/zextras/redolog /opt/zextras/store /opt/zextras/index /opt/zextras/backup
+
+  if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
+    find /opt/zextras/mailboxd/work/zimbra -exec touch {} \; 2>/dev/null
+  fi
+
+  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
+    /opt/zextras/libexec/zmfixperms
+  fi
+
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+    systemctl enable carbonio-appserver.target >/dev/null 2>&1 || :
+  fi
+}
+
+prerm__rocky_9() {
+  if [ -d /run/systemd/system ]; then
+    systemctl --no-reload disable --now carbonio-appserver.target >/dev/null 2>&1 || :
+  fi
+}
+
+postrm__rocky_9() {
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
   fi
 }
