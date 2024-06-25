@@ -22,6 +22,13 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                script {
+                    if (BRANCH_NAME == 'devel') {
+                        def timestamp = new Date().format('yyyyMMddHHmmss')
+                        sh "sed -i \"s!pkgrel=.*!pkgrel=${timestamp}!\" appserver/PKGBUILD"
+
+                    }
+                }
                 stash includes: '**', name: 'staging'
             }
         }
