@@ -22,6 +22,12 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                script {
+                    if (BRANCH_NAME == 'devel') {
+                        def timestamp = new Date().format('yyyyMMddHHmmss')
+                        sh "sed -i \"s!pkgrel=.*!pkgrel=${timestamp}!\" appserver/PKGBUILD"
+                    }
+                }
                 stash includes: '**', name: 'staging'
             }
         }
@@ -207,7 +213,7 @@ pipeline {
                     uploadSpec= """{
                         "files": [
                             {
-                                "pattern": "artifacts/x86_64/(carbonio-appserver)-(*).el8.x86_64rpm",
+                                "pattern": "artifacts/x86_64/(carbonio-appserver)-(*).el8.x86_64.rpm",
                                 "target": "centos8-rc/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             }
