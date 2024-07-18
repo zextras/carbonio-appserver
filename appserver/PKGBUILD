@@ -39,6 +39,7 @@ sha256sums=(
 package() {
   mkdir -p "${pkgdir}/opt/zextras/bin/"
   mkdir -p "${pkgdir}/opt/zextras/conf/templates/"
+  mkdir -p "${pkgdir}/opt/zextras/jetty_base/etc/"
   mkdir -p "${pkgdir}/opt/zextras/jetty_base/common/endorsed/"
   mkdir -p "${pkgdir}/opt/zextras/jetty_base/common/lib/"
   mkdir -p "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/"
