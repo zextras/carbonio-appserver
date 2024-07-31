@@ -27,12 +27,14 @@ depends=(
 source=(
   "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-clam-scanner-store/22.3.0/zm-clam-scanner-store-22.3.0.jar"
   "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-nginx-lookup-store/24.5.0/zm-nginx-lookup-store-24.5.0.jar"
+  "${pkgname}.sysctl.conf"
   "${pkgname}.target"
 )
 
 sha256sums=(
   'SKIP'
   'SKIP'
+  '9649c04b66b34481ea04113741260d404e3b25714aa75c92c33d8dbfd1d52a98'
   'c067736a3d918bc1ca4cf9139b64776628287ccf6bb34ba9c09053a1741c4c6d'
 )
 
@@ -68,6 +70,8 @@ package() {
   mkdir -p "${pkgdir}/lib/systemd/system/${pkgname}.target.wants"
   install -Dm 644 "${srcdir}/${pkgname}.target" \
     "${pkgdir}/lib/systemd/system/${pkgname}.target"
+  install -Dm 644 "${srcdir}/${pkgname}.sysctl.conf" \
+    "${pkgdir}/lib/sysctl.d/60-${pkgname}.conf"
 
   ln -sf "/lib/systemd/system/carbonio-configd.service" \
     "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-configd.service"
