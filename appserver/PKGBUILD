@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver"
-pkgver="4.1.3"
+pkgver="4.3.0"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"
@@ -18,10 +18,7 @@ depends=(
   "carbonio-appserver-conf"
   "carbonio-appserver-service"
   "carbonio-appserver-db"
-  "carbonio-appserver-store-libs"
-  "carbonio-appserver-war"
   "carbonio-core"
-  "carbonio-jetty-distribution"
   "carbonio-mariadb"
   "carbonio-prometheus-mysqld-exporter"
   "carbonio-zal"
@@ -42,6 +39,7 @@ sha256sums=(
 package() {
   mkdir -p "${pkgdir}/opt/zextras/bin/"
   mkdir -p "${pkgdir}/opt/zextras/conf/templates/"
+  mkdir -p "${pkgdir}/opt/zextras/jetty_base/etc/"
   mkdir -p "${pkgdir}/opt/zextras/jetty_base/common/endorsed/"
   mkdir -p "${pkgdir}/opt/zextras/jetty_base/common/lib/"
   mkdir -p "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/"
@@ -57,54 +55,6 @@ package() {
   install -D conf/owasp_policy.xml \
     "${pkgdir}/opt/zextras/conf/owasp_policy.xml"
 
-  install -D conf/jetty/jetty-setuid.xml \
-    "${pkgdir}/opt/zextras/jetty_base/etc/jetty-setuid.xml"
-
-  install -D conf/jetty/jetty.xml.production \
-    "${pkgdir}/opt/zextras/jetty_base/etc/jetty.xml.in"
-
-  install -D conf/jetty/jettyrc \
-    "${pkgdir}/opt/zextras/jetty_base/etc/jettyrc"
-
-  install -D conf/jetty/spnego/etc/krb5.ini \
-    "${pkgdir}/opt/zextras/jetty_base/etc/krb5.ini.in"
-
-  install -D conf/jetty/spnego/etc/spnego.conf \
-    "${pkgdir}/opt/zextras/jetty_base/etc/spnego.conf.in"
-
-  install -D conf/jetty/spnego/etc/spnego.properties \
-    "${pkgdir}/opt/zextras/jetty_base/etc/spnego.properties.in"
-
-  install -D conf/jetty/webdefault.xml \
-    "${pkgdir}/opt/zextras/jetty_base/etc/webdefault.xml"
-
-  install -D conf/jetty/zimbra.policy.example \
-    "${pkgdir}/opt/zextras/jetty_base/etc/zimbra.policy.example"
-
-  install -D conf/jetty/modules/deploy.mod \
-    "${pkgdir}/opt/zextras/jetty_base/modules/deploy.mod"
-
-  install -D conf/jetty/modules/mail.mod \
-    "${pkgdir}/opt/zextras/jetty_base/modules/mail.mod"
-
-  install -D conf/jetty/modules/npn/npn-1.7.0_51.mod \
-    "${pkgdir}/opt/zextras/jetty_base/modules/npn"
-
-  install -D conf/jetty/modules/rewrite.mod \
-    "${pkgdir}/opt/zextras/jetty_base/modules/rewrite.mod"
-
-  install -D conf/jetty/modules/setuid.mod.in \
-    "${pkgdir}/opt/zextras/jetty_base/modules/setuid.mod.in"
-
-  install -D conf/jetty/modules/zimbra.mod \
-    "${pkgdir}/opt/zextras/jetty_base/modules/zimbra.mod"
-
-  install -D conf/jetty/start.d/setuid.ini.in \
-    "${pkgdir}/opt/zextras/jetty_base/start.d/setuid.ini.in"
-
-  install -D conf/.emptyfile \
-    "${pkgdir}/opt/zextras/jetty_base/temp/.emptyfile"
-
   install -D ${srcdir}/zm-clam-scanner-store-22.3.0.jar \
     -t "${pkgdir}/opt/zextras/lib/ext/clamscanner/"
 
@@ -113,9 +63,6 @@ package() {
 
   install -D conf/hotspot_compiler \
     "${pkgdir}/opt/zextras/log/.hotspot_compiler"
-
-  install -D conf/robots.txt \
-    -t "${pkgdir}/opt/zextras/jetty_base/webapps/zimbra/"
 
   # systemd unit
   mkdir -p "${pkgdir}/lib/systemd/system/${pkgname}.target.wants"
@@ -170,6 +117,54 @@ postinst__apt() {
 
   if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
     /opt/zextras/libexec/zmfixperms
+  fi
+}
+
+postinst__ubuntu_noble() {
+  H=$(hostname -s)
+
+  if [ -f /opt/zextras/db/db.sql ]; then
+    mv /opt/zextras/db/db.sql /opt/zextras/db/db.sql.in
+    sed -e "/server.hostname/ s/local/$H/" /opt/zextras/db/db.sql.in >/opt/zextras/db/db.sql
+    chown zextras:zextras /opt/zextras/db/db.sql*
+    chmod 440 /opt/zextras/db/db.sql*
+  fi
+
+  (cd /opt/zextras && rm -f jetty && ln -s jetty_base jetty)
+  (cd /opt/zextras && rm -f mailboxd && ln -s jetty_base mailboxd)
+
+  mkdir -p /opt/zextras/mailboxd/logs
+  chown zextras:zextras /opt/zextras/mailboxd/logs
+
+  mkdir -p /opt/zextras/redolog
+  mkdir -p /opt/zextras/store
+  mkdir -p /opt/zextras/index
+  mkdir -p /opt/zextras/backup
+  chown zextras:zextras /opt/zextras/redolog /opt/zextras/store /opt/zextras/index /opt/zextras/backup
+
+  if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
+    find /opt/zextras/mailboxd/work/zimbra -exec touch {} \; 2>/dev/null
+  fi
+
+  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
+    /opt/zextras/libexec/zmfixperms
+  fi
+
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+    systemctl enable carbonio-appserver.target >/dev/null 2>&1 || :
+  fi
+}
+
+prerm__ubuntu_noble() {
+  if [ -d /run/systemd/system ]; then
+    systemctl --no-reload disable --now carbonio-appserver.target >/dev/null 2>&1 || :
+  fi
+}
+
+postrm__ubuntu_noble() {
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
   fi
 }
 
