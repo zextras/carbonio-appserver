@@ -259,7 +259,7 @@ pipeline {
                                 "pattern": "artifacts/*noble*.deb",
                                 "target": "ubuntu-rc/pool/",
                                 "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
-                            },
+                            }
                         ]
                     }"""
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
