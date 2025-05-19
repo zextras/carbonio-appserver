@@ -11,7 +11,7 @@ pipeline {
     }
     agent {
         node {
-            label 'base-agent-v2'
+            label 'base'
         }
     }
     environment {
@@ -34,93 +34,102 @@ pipeline {
 
         stage('Build deb/rpm') {
             parallel {
-                        stage('Ubuntu 20') {
-                            agent {
-                                node {
-                                    label 'yap-agent-ubuntu-20.04-v2'
-                                }
-                            }
-                            steps {
-                                unstash 'staging'
-                                sh 'sudo yap build ubuntu-focal . -s'
-                                stash includes: 'artifacts/*focal*.deb', name: 'artifacts-ubuntu-focal'
-                            }
-                            post {
-                                always {
-                                    archiveArtifacts artifacts: "artifacts/*focal*.deb", fingerprint: true
-                                }
-                            }
-                        }
-                        stage('Ubuntu 22') {
-                            agent {
-                                node {
-                                    label 'yap-agent-ubuntu-22.04-v2'
-                                }
-                            }
-                            steps {
-                                unstash 'staging'
-                                sh 'sudo yap build ubuntu-jammy . -s'
-                                stash includes: 'artifacts/*jammy*.deb', name: 'artifacts-ubuntu-jammy'
-                            }
-                            post {
-                                always {
-                                    archiveArtifacts artifacts: "artifacts/*jammy*.deb", fingerprint: true
-                                }
-                            }
-                        }
-                        stage('Ubuntu 24') {
-                            agent {
-                                node {
-                                    label 'yap-agent-ubuntu-24.04-v2'
-                                }
-                            }
-                            steps {
-                                unstash 'staging'
-                                sh 'sudo yap build ubuntu-noble . -s'
-                                stash includes: 'artifacts/*noble*.deb', name: 'artifacts-ubuntu-noble'
-                            }
-                            post {
-                                always {
-                                    archiveArtifacts artifacts: "artifacts/*noble*.deb", fingerprint: true
-                                }
-                            }
-                        }
-
-                        stage('RHEL8') {
-                            agent {
-                                node {
-                                    label 'yap-agent-rocky-8-v2'
-                                }
-                            }
-                            steps {
-                                unstash 'staging'
-                                sh 'sudo yap build rocky-8 . -s'
-                                stash includes: 'artifacts/x86_64/*el8*.rpm', name: 'artifacts-rhel8'
-                            }
-                            post {
-                                always {
-                                    archiveArtifacts artifacts: "artifacts/x86_64/*el8*.rpm", fingerprint: true
-                                }
-                            }
-                        }
-                        stage('RHEL9') {
-                            agent {
-                                node {
-                                    label 'yap-agent-rocky-9-v2'
-                                }
-                            }
-                            steps {
-                                unstash 'staging'
-                                sh 'sudo yap build rocky-9 . -s'
-                                stash includes: 'artifacts/x86_64/*el9*.rpm', name: 'artifacts-rhel9'
-                            }
-                            post {
-                                always {
-                                    archiveArtifacts artifacts: "artifacts/x86_64/*el9*.rpm", fingerprint: true
-                                }
-                            }
+                stage('Ubuntu 20') {
+                    agent {
+                        node {
+                            label 'yap-ubuntu-20-v1'
                         }
                     }
+                    steps {
+                        container('yap') {
+                            unstash 'staging'
+                            sh 'sudo yap build ubuntu-focal . -s'
+                            stash includes: 'artifacts/*focal*.deb', name: 'artifacts-ubuntu-focal'
+                        }
+                    }
+                    post {
+                        always {
+                            archiveArtifacts artifacts: "artifacts/*focal*.deb", fingerprint: true
+                        }
+                    }
+                }
+                stage('Ubuntu 22') {
+                    agent {
+                        node {
+                            label 'yap-ubuntu-22-v1'
+                        }
+                    }
+                    steps {
+                        container('yap') {
+                            unstash 'staging'
+                            sh 'sudo yap build ubuntu-jammy . -s'
+                            stash includes: 'artifacts/*jammy*.deb', name: 'artifacts-ubuntu-jammy'
+                        }
+                    }
+                    post {
+                        always {
+                            archiveArtifacts artifacts: "artifacts/*jammy*.deb", fingerprint: true
+                        }
+                    }
+                }
+                stage('Ubuntu 24') {
+                    agent {
+                        node {
+                            label 'yap-ubuntu-24-v1'
+                        }
+                    }
+                    steps {
+                        container('yap') {
+                            unstash 'staging'
+                            sh 'sudo yap build ubuntu-noble . -s'
+                            stash includes: 'artifacts/*noble*.deb', name: 'artifacts-ubuntu-noble'
+                        }
+                    }
+                    post {
+                        always {
+                            archiveArtifacts artifacts: "artifacts/*noble*.deb", fingerprint: true
+                        }
+                    }
+                }
+                stage('RHEL8') {
+                    agent {
+                        node {
+                            label 'yap-rocky-8-v1'
+                        }
+                    }
+                    steps {
+                        container('yap') {
+                            unstash 'staging'
+                            sh 'sudo yap build rocky-8 . -s'
+                            stash includes: 'artifacts/*el8*.rpm', name: 'artifacts-rhel8'
+                        }
+                    }
+                    post {
+                        always {
+                            archiveArtifacts artifacts: "artifacts/*el8*.rpm", fingerprint: true
+                        }
+                    }
+                }
+                stage('RHEL9') {
+                    agent {
+                        node {
+                            label 'yap-rocky-9-v1'
+                        }
+                    }
+                    steps {
+                        container('yap') {
+                            unstash 'staging'
+                            sh 'sudo yap build rocky-9 . -s'
+                            stash includes: 'artifacts/*el9*.rpm', name: 'artifacts-rhel9'
+                        }
+                    }
+                    post {
+                        always {
+                            archiveArtifacts artifacts: "artifacts/*el9*.rpm", fingerprint: true
+                        }
+                    }
+                }
+            }
         }
 
         stage('Upload To Playground') {
@@ -160,12 +169,12 @@ pipeline {
                                 "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
                             },
                             {
-                                "pattern": "artifacts/x86_64/(carbonio-appserver)-(*).el8.x86_64.rpm",
+                                "pattern": "artifacts/(carbonio-appserver)-(*).el8.x86_64.rpm",
                                 "target": "centos8-playground/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
                             {
-                                "pattern": "artifacts/x86_64/(carbonio-appserver)-(*).el9.x86_64.rpm",
+                                "pattern": "artifacts/(carbonio-appserver)-(*).el9.x86_64.rpm",
                                 "target": "rhel9-playground/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             }
@@ -209,12 +218,12 @@ pipeline {
                                 "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
                             },
                             {
-                                "pattern": "artifacts/x86_64/(carbonio-appserver)-(*).el8.x86_64.rpm",
+                                "pattern": "artifacts/(carbonio-appserver)-(*).el8.x86_64.rpm",
                                 "target": "centos8-devel/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
                             {
-                                "pattern": "artifacts/x86_64/(carbonio-appserver)-(*).el9.x86_64.rpm",
+                                "pattern": "artifacts/(carbonio-appserver)-(*).el9.x86_64.rpm",
                                 "target": "rhel9-devel/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             }
@@ -283,7 +292,7 @@ pipeline {
                     uploadSpec= """{
                         "files": [
                             {
-                                "pattern": "artifacts/x86_64/(carbonio-appserver)-(*).el8.x86_64.rpm",
+                                "pattern": "artifacts/(carbonio-appserver)-(*).el8.x86_64.rpm",
                                 "target": "centos8-rc/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             }
@@ -310,7 +319,7 @@ pipeline {
                     uploadSpec= """{
                         "files": [
                             {
-                                "pattern": "artifacts/x86_64/(carbonio-appserver)-(*).el9.x86_64.rpm",
+                                "pattern": "artifacts/(carbonio-appserver)-(*).el9.x86_64.rpm",
                                 "target": "rhel9-rc/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             }
