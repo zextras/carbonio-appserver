@@ -27,11 +27,13 @@ depends=(
 source=(
   "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-clam-scanner-store/22.3.0/zm-clam-scanner-store-22.3.0.jar"
   "${pkgname}.target"
+  "carbonio-tmpfile.conf"
 )
 
 sha256sums=(
   'SKIP'
   'efd70576906f667cab1f2d21a31ddcd4250244be5f63b6465e22678aafc12413'
+  'daaf4a8a961f767bcdfeab1cca7669c904446181251151e30f02a2fd90711725'
 )
 
 package() {
@@ -59,6 +61,12 @@ package() {
   install -D conf/hotspot_compiler \
     "${pkgdir}/opt/zextras/log/.hotspot_compiler"
 
+  ln -sf /opt/zextras/jetty_base \
+    "${pkgdir}/opt/zextras/jetty"
+
+  ln -sf /opt/zextras/jetty_base \
+    "${pkgdir}/opt/zextras/mailboxd"
+
   # systemd units and target
   mkdir -p "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants"
   mkdir -p "${pkgdir}/usr/lib/systemd/system/${pkgname}.target.wants"
@@ -77,6 +85,14 @@ package() {
 }
 
 preinst() {
+  if [ -d "/opt/zextras/jetty" ]; then
+    rm -f /opt/zextras/jetty >/dev/null 2>&1
+  fi
+
+  if [ -f "/opt/zextras/mailboxd" ]; then
+    rm -f /opt/zextras/mailboxd >/dev/null 2>&1
+  fi
+
   if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
     rm -rf /opt/zextras/mailboxd/work/zimbra >/dev/null 2>&1
   fi
@@ -92,34 +108,9 @@ postinst__apt() {
   if [ -f /opt/zextras/db/db.sql ]; then
     mv /opt/zextras/db/db.sql /opt/zextras/db/db.sql.in
     sed -e "/server.hostname/ s/local/$H/" /opt/zextras/db/db.sql.in >/opt/zextras/db/db.sql
-    chown zextras:zextras /opt/zextras/db/db.sql*
-    chmod 440 /opt/zextras/db/db.sql*
   fi
 
-  (cd /opt/zextras && rm -f jetty && ln -s jetty_base jetty)
-  (cd /opt/zextras && rm -f mailboxd && ln -s jetty_base mailboxd)
-
-  mkdir -p /opt/zextras/mailboxd/logs
-  chown zextras:zextras /opt/zextras/mailboxd/logs
-
-  mkdir -p /opt/zextras/redolog
-  mkdir -p /opt/zextras/store
-  mkdir -p /opt/zextras/index
-  mkdir -p /opt/zextras/backup
-  chown zextras:zextras \
-    /opt/zextras/redolog \
-    /opt/zextras/store \
-    /opt/zextras/index \
-    /opt/zextras/backup \
-    /opt/zextras/cache
-
-  if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
-    find /opt/zextras/mailboxd/work/zimbra -exec touch {} \; 2>/dev/null
-  fi
-
-  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
-    /opt/zextras/libexec/zmfixperms
-  fi
+  systemd-tmpfiles --create
 }
 
 postinst__ubuntu_noble() {
@@ -128,34 +119,9 @@ postinst__ubuntu_noble() {
   if [ -f /opt/zextras/db/db.sql ]; then
     mv /opt/zextras/db/db.sql /opt/zextras/db/db.sql.in
     sed -e "/server.hostname/ s/local/$H/" /opt/zextras/db/db.sql.in >/opt/zextras/db/db.sql
-    chown zextras:zextras /opt/zextras/db/db.sql*
-    chmod 440 /opt/zextras/db/db.sql*
   fi
 
-  (cd /opt/zextras && rm -f jetty && ln -s jetty_base jetty)
-  (cd /opt/zextras && rm -f mailboxd && ln -s jetty_base mailboxd)
-
-  mkdir -p /opt/zextras/mailboxd/logs
-  chown zextras:zextras /opt/zextras/mailboxd/logs
-
-  mkdir -p /opt/zextras/redolog
-  mkdir -p /opt/zextras/store
-  mkdir -p /opt/zextras/index
-  mkdir -p /opt/zextras/backup
-  chown zextras:zextras \
-    /opt/zextras/redolog \
-    /opt/zextras/store \
-    /opt/zextras/index \
-    /opt/zextras/backup \
-    /opt/zextras/cache
-
-  if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
-    find /opt/zextras/mailboxd/work/zimbra -exec touch {} \; 2>/dev/null
-  fi
-
-  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
-    /opt/zextras/libexec/zmfixperms
-  fi
+  systemd-tmpfiles --create
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload &>/dev/null || :
@@ -181,34 +147,9 @@ postinst__rocky_8() {
   if [ -f /opt/zextras/db/db.sql ]; then
     mv /opt/zextras/db/db.sql /opt/zextras/db/db.sql.in
     sed -e "/server.hostname/ s/local/$H/" /opt/zextras/db/db.sql.in >/opt/zextras/db/db.sql
-    chown zextras:zextras /opt/zextras/db/db.sql*
-    chmod 440 /opt/zextras/db/db.sql*
   fi
 
-  (cd /opt/zextras && rm -f jetty && ln -s jetty_base jetty)
-  (cd /opt/zextras && rm -f mailboxd && ln -s jetty_base mailboxd)
-
-  mkdir -p /opt/zextras/mailboxd/logs
-  chown zextras:zextras /opt/zextras/mailboxd/logs
-
-  mkdir -p /opt/zextras/redolog
-  mkdir -p /opt/zextras/store
-  mkdir -p /opt/zextras/index
-  mkdir -p /opt/zextras/backup
-  chown zextras:zextras \
-    /opt/zextras/redolog \
-    /opt/zextras/store \
-    /opt/zextras/index \
-    /opt/zextras/backup \
-    /opt/zextras/cache
-
-  if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
-    find /opt/zextras/mailboxd/work/zimbra -exec touch {} \; 2>/dev/null
-  fi
-
-  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
-    /opt/zextras/libexec/zmfixperms
-  fi
+  systemd-tmpfiles --create
 }
 
 postinst__rocky_9() {
@@ -217,34 +158,9 @@ postinst__rocky_9() {
   if [ -f /opt/zextras/db/db.sql ]; then
     mv /opt/zextras/db/db.sql /opt/zextras/db/db.sql.in
     sed -e "/server.hostname/ s/local/$H/" /opt/zextras/db/db.sql.in >/opt/zextras/db/db.sql
-    chown zextras:zextras /opt/zextras/db/db.sql*
-    chmod 440 /opt/zextras/db/db.sql*
   fi
 
-  (cd /opt/zextras && rm -f jetty && ln -s jetty_base jetty)
-  (cd /opt/zextras && rm -f mailboxd && ln -s jetty_base mailboxd)
-
-  mkdir -p /opt/zextras/mailboxd/logs
-  chown zextras:zextras /opt/zextras/mailboxd/logs
-
-  mkdir -p /opt/zextras/redolog
-  mkdir -p /opt/zextras/store
-  mkdir -p /opt/zextras/index
-  mkdir -p /opt/zextras/backup
-  chown zextras:zextras \
-    /opt/zextras/redolog \
-    /opt/zextras/store \
-    /opt/zextras/index \
-    /opt/zextras/backup \
-    /opt/zextras/cache
-
-  if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
-    find /opt/zextras/mailboxd/work/zimbra -exec touch {} \; 2>/dev/null
-  fi
-
-  if [ -x "/opt/zextras/libexec/zmfixperms" ]; then
-    /opt/zextras/libexec/zmfixperms
-  fi
+  systemd-tmpfiles --create
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload &>/dev/null || :
