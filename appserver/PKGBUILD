@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver"
-pkgver="4.4.0"
+pkgver="4.4.1"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"
@@ -106,7 +106,12 @@ postinst__apt() {
   mkdir -p /opt/zextras/store
   mkdir -p /opt/zextras/index
   mkdir -p /opt/zextras/backup
-  chown zextras:zextras /opt/zextras/redolog /opt/zextras/store /opt/zextras/index /opt/zextras/backup
+  chown zextras:zextras \
+    /opt/zextras/redolog \
+    /opt/zextras/store \
+    /opt/zextras/index \
+    /opt/zextras/backup \
+    /opt/zextras/cache
 
   if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
     find /opt/zextras/mailboxd/work/zimbra -exec touch {} \; 2>/dev/null
@@ -137,7 +142,12 @@ postinst__ubuntu_noble() {
   mkdir -p /opt/zextras/store
   mkdir -p /opt/zextras/index
   mkdir -p /opt/zextras/backup
-  chown zextras:zextras /opt/zextras/redolog /opt/zextras/store /opt/zextras/index /opt/zextras/backup
+  chown zextras:zextras \
+    /opt/zextras/redolog \
+    /opt/zextras/store \
+    /opt/zextras/index \
+    /opt/zextras/backup \
+    /opt/zextras/cache
 
   if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
     find /opt/zextras/mailboxd/work/zimbra -exec touch {} \; 2>/dev/null
@@ -185,7 +195,12 @@ postinst__rocky_8() {
   mkdir -p /opt/zextras/store
   mkdir -p /opt/zextras/index
   mkdir -p /opt/zextras/backup
-  chown zextras:zextras /opt/zextras/redolog /opt/zextras/store /opt/zextras/index /opt/zextras/backup
+  chown zextras:zextras \
+    /opt/zextras/redolog \
+    /opt/zextras/store \
+    /opt/zextras/index \
+    /opt/zextras/backup \
+    /opt/zextras/cache
 
   if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
     find /opt/zextras/mailboxd/work/zimbra -exec touch {} \; 2>/dev/null
@@ -216,7 +231,12 @@ postinst__rocky_9() {
   mkdir -p /opt/zextras/store
   mkdir -p /opt/zextras/index
   mkdir -p /opt/zextras/backup
-  chown zextras:zextras /opt/zextras/redolog /opt/zextras/store /opt/zextras/index /opt/zextras/backup
+  chown zextras:zextras \
+    /opt/zextras/redolog \
+    /opt/zextras/store \
+    /opt/zextras/index \
+    /opt/zextras/backup \
+    /opt/zextras/cache
 
   if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
     find /opt/zextras/mailboxd/work/zimbra -exec touch {} \; 2>/dev/null
