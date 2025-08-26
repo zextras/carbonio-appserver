@@ -25,12 +25,10 @@ depends=(
 )
 
 source=(
-  "https://zextras.jfrog.io/artifactory/public-maven-repo/zimbra/zm-clam-scanner-store/22.3.0/zm-clam-scanner-store-22.3.0.jar"
   "${pkgname}.target"
 )
 
 sha256sums=(
-  'SKIP'
   'efd70576906f667cab1f2d21a31ddcd4250244be5f63b6465e22678aafc12413'
 )
 
@@ -52,9 +50,6 @@ package() {
 
   install -D conf/owasp_policy.xml \
     "${pkgdir}/opt/zextras/conf/owasp_policy.xml"
-
-  install -D ${srcdir}/zm-clam-scanner-store-22.3.0.jar \
-    -t "${pkgdir}/opt/zextras/lib/ext/clamscanner/"
 
   install -D conf/hotspot_compiler \
     "${pkgdir}/opt/zextras/log/.hotspot_compiler"
