@@ -1,9 +1,9 @@
 {
   "name": "An open-source, community-driven email server",
-  "Description": "Appserver",
+  "description": "Appserver",
   "buildDir": "/tmp/",
   "output": "artifacts",
-  "Projects": [
+  "projects": [
     {
       "name": "appserver"
     }
