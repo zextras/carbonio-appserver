@@ -31,7 +31,7 @@ source=(
 
 sha256sums=(
   'efd70576906f667cab1f2d21a31ddcd4250244be5f63b6465e22678aafc12413'
-  '03c7ef75ab0a88dd349bf3c9b657731c00ba28185ccb08917b0014fb2bdc2ec9'
+  '8450d912a10dc3614ea1234ecd448d85cd76d7fba513c1df30c0bdd4f207f470'
 )
 
 package() {
@@ -87,7 +87,7 @@ preinst() {
     rm -f /opt/zextras/jetty >/dev/null 2>&1
   fi
 
-  if [ -f "/opt/zextras/mailboxd" ]; then
+  if [ -d "/opt/zextras/mailboxd" ]; then
     rm -f /opt/zextras/mailboxd >/dev/null 2>&1
   fi
 
