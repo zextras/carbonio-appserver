@@ -31,7 +31,7 @@ source=(
 
 sha256sums=(
   'efd70576906f667cab1f2d21a31ddcd4250244be5f63b6465e22678aafc12413'
-  '8450d912a10dc3614ea1234ecd448d85cd76d7fba513c1df30c0bdd4f207f470'
+  '0f34153c1239bbcfa688672cb39a8e77369024419d36ec0865ec00d3f153630c'
 )
 
 package() {
@@ -84,11 +84,11 @@ package() {
 
 preinst() {
   if [ -d "/opt/zextras/jetty" ]; then
-    rm -f /opt/zextras/jetty >/dev/null 2>&1
+    rm -rf /opt/zextras/jetty >/dev/null 2>&1
   fi
 
   if [ -d "/opt/zextras/mailboxd" ]; then
-    rm -f /opt/zextras/mailboxd >/dev/null 2>&1
+    rm -rf /opt/zextras/mailboxd >/dev/null 2>&1
   fi
 
   if [ -d "/opt/zextras/mailboxd/work/zimbra" ]; then
