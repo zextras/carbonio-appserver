@@ -108,7 +108,7 @@ postinst__apt() {
     sed -e "/server.hostname/ s/local/$H/" /opt/zextras/db/db.sql.in >/opt/zextras/db/db.sql
   fi
 
-  systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-appserver.conf
+  systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-appserver.conf >/dev/null 2>&1 || :
 }
 
 postinst__ubuntu_noble() {
@@ -119,7 +119,7 @@ postinst__ubuntu_noble() {
     sed -e "/server.hostname/ s/local/$H/" /opt/zextras/db/db.sql.in >/opt/zextras/db/db.sql
   fi
 
-  systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-appserver.conf
+  systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-appserver.conf >/dev/null 2>&1 || :
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload &>/dev/null || :
@@ -147,7 +147,7 @@ postinst__rocky_8() {
     sed -e "/server.hostname/ s/local/$H/" /opt/zextras/db/db.sql.in >/opt/zextras/db/db.sql
   fi
 
-  systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-appserver.conf
+  systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-appserver.conf >/dev/null 2>&1 || :
 }
 
 postinst__rocky_9() {
@@ -158,7 +158,7 @@ postinst__rocky_9() {
     sed -e "/server.hostname/ s/local/$H/" /opt/zextras/db/db.sql.in >/opt/zextras/db/db.sql
   fi
 
-  systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-appserver.conf
+  systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-appserver.conf >/dev/null 2>&1 || :
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload &>/dev/null || :
