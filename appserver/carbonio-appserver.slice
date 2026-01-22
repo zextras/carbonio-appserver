@@ -1,0 +1,31 @@
+[Unit]
+Description=Carbonio Appserver Slice
+Documentation=man:systemd.slice(5)
+Before=slices.target
+PartOf=carbonio-appserver.target
+StopWhenUnneeded=yes
+
+[Slice]
+# Application tier: appserver (Java/Jetty), appserver-db (MariaDB)
+# These are the heaviest resource consumers
+#
+# Scaling guide:
+#   Small  (8GB RAM):   ~4GB effective (50% of 8GB)
+#   Medium (32GB RAM):  ~16GB effective (50% of 32GB)
+#   Large  (64GB RAM):  ~32GB effective (50% of 64GB)
+
+# Memory controls - percentage-based for automatic scaling
+# MemoryHigh: soft limit, triggers reclaim when exceeded
+# MemoryMax: hard limit, OOM killer if exceeded
+MemoryMax=50%
+MemoryHigh=45%
+
+# CPU weight: highest priority (mailbox is user-facing)
+CPUWeight=100
+
+# I/O weight: highest priority (database operations)
+IOWeight=100
+
+# Process/thread limit (Java + MariaDB need many threads)
+# Scale: ~100 threads per 1000 concurrent users
+TasksMax=4096
