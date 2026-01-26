@@ -25,11 +25,13 @@ depends=(
 )
 
 source=(
+  "${pkgname}.slice"
   "${pkgname}.target"
   "systemd-tmpfile.conf"
 )
 
 sha256sums=(
+  'ad105fda6d4b4c34ec227d329a508111b2739fcb1bd9cabca409d402d1be763b'
   'efd70576906f667cab1f2d21a31ddcd4250244be5f63b6465e22678aafc12413'
   '51565ef1d7f2483138b9eecee084df5eebdc86262649a4be7652411c62ea36ee'
 )
@@ -65,7 +67,9 @@ package() {
   # systemd units and target
   mkdir -p "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants"
   mkdir -p "${pkgdir}/usr/lib/systemd/system/${pkgname}.target.wants"
-  install -Dm 644 "${srcdir}/${pkgname}.target" \
+  install -Dm644 "${srcdir}/${pkgname}.slice" \
+    "${pkgdir}/usr/lib/systemd/system/${pkgname}.slice"
+  install -Dm644 "${srcdir}/${pkgname}.target" \
     "${pkgdir}/usr/lib/systemd/system/${pkgname}.target"
   ln -sf "/usr/lib/systemd/system/${pkgname}.target" \
     "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants/${pkgname}.target"
