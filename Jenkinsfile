@@ -1,5 +1,5 @@
 library(
-    identifier: 'jenkins-lib-common@1.3.3',
+    identifier: 'jenkins-lib-common@1.5.0',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         remote: 'git@github.com:zextras/jenkins-lib-common.git',
@@ -17,7 +17,6 @@ pipeline {
     }
 
     environment {
-        NETWORK_OPTS = '--network ci_agent'
         ARTIFACTORY_ACCESS=credentials('artifactory-jenkins-gradle-properties-splitted')
     }
 
@@ -42,9 +41,9 @@ pipeline {
         stage('Build deb/rpm') {
             steps {
                 echo 'Building deb/rpm packages'
-                buildStage([
-                    buildFlags: ' -s '
-                ])
+                buildStage(
+                    buildFlags: ' -ds ',
+                )
             }
         }
 
