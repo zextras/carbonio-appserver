@@ -56,9 +56,7 @@ pipeline {
                 jfrog 'jfrog-cli'
             }
             steps {
-                uploadStage(
-                    packages: yapHelper.getPackageNames()
-                )
+                uploadStage()
             }
         }
         stage('Bump version') {
