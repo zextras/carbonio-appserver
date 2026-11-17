@@ -18,20 +18,32 @@ depends=(
   "carbonio-appserver-conf"
   "carbonio-appserver-service"
   "carbonio-appserver-db"
-  "carbonio-core"
+  "carbonio-core>=4.10.0"
   "carbonio-mariadb"
   "carbonio-prometheus-mysqld-exporter"
   "carbonio-zal"
 )
 
+# Noble only: the units moved here from carbonio-core. On RPM yap would turn
+# replaces into Obsoletes, which would remove this package on upgrade.
+replaces__ubuntu_noble=("carbonio-core (<< 4.10.0)")
+
 source=(
   "${pkgname}.target"
   "systemd-tmpfile.conf"
+  "carbonio-appserver-log-cleanup.service"
+  "carbonio-appserver-log-cleanup.timer"
+  "carbonio-appserver-db-integrity-report.service"
+  "carbonio-appserver-db-integrity-report.timer"
 )
 
 sha256sums=(
   '797aece99074adea6923bf9a0f2948247fc2e0def44cb1078e9a95fe640d2068'
   '16bc0c159c5a343fb8ef635e0985cb888a6ad662693c3f45873c2ef38096bb5c'
+  '8b636d4693f52358eb8127416715afc0695f79c75290e52a511ab4101ea3beab'
+  '4db09032483567b0d8e4f61a5c94eccb4b402d612f26b8cc0c254619eefdfc7e'
+  'e8d5e8d46c3d833c47ab5e0c5b5af759ddc4af08367eae85e71d55fa5a448260'
+  '0006742e8786342dba1d0f46bf01790ce04d0bf4d74a2dcf8c5cca968abb5266'
 )
 
 _package() {
@@ -71,6 +83,18 @@ _package_systemd() {
   # systemd units and target
   install -Dm 644 "${srcdir}/${pkgname}.target" \
     "${pkgdir}/usr/lib/systemd/system/${pkgname}.target"
+
+  install -Dm644 "${srcdir}/carbonio-appserver-log-cleanup.service" \
+    "${pkgdir}/usr/lib/systemd/system/carbonio-appserver-log-cleanup.service"
+
+  install -Dm644 "${srcdir}/carbonio-appserver-log-cleanup.timer" \
+    "${pkgdir}/usr/lib/systemd/system/carbonio-appserver-log-cleanup.timer"
+
+  install -Dm644 "${srcdir}/carbonio-appserver-db-integrity-report.service" \
+    "${pkgdir}/usr/lib/systemd/system/carbonio-appserver-db-integrity-report.service"
+
+  install -Dm644 "${srcdir}/carbonio-appserver-db-integrity-report.timer" \
+    "${pkgdir}/usr/lib/systemd/system/carbonio-appserver-db-integrity-report.timer"
 }
 
 _postinst() {
@@ -90,6 +114,10 @@ _postinst_systemd() {
     systemctl enable carbonio-appserver.target &>/dev/null || :
     systemctl enable carbonio-appserver.service &>/dev/null || :
     systemctl enable carbonio-appserver-db.service &>/dev/null || :
+    systemctl enable carbonio-appserver-log-cleanup.timer carbonio-appserver-db-integrity-report.timer &>/dev/null || :
+    if systemctl -q is-active carbonio-appserver.target; then
+      systemctl start carbonio-appserver-log-cleanup.timer carbonio-appserver-db-integrity-report.timer &>/dev/null || :
+    fi
   fi
 }
 
@@ -101,6 +129,7 @@ _postrm_systemd() {
 
 _prerm_systemd() {
   if [ -d /run/systemd/system ]; then
+    systemctl --no-reload disable --now carbonio-appserver-log-cleanup.timer carbonio-appserver-db-integrity-report.timer &>/dev/null || :
     systemctl --no-reload disable --now carbonio-appserver.target &>/dev/null || :
   fi
 }

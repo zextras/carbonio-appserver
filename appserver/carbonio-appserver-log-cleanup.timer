@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+[Unit]
+Description=Carbonio Appserver Log and Stack Trace Cleanup Daily
+Documentation=https://docs.zextras.com/
+PartOf=carbonio-appserver.target
+
+[Timer]
+OnCalendar=*-*-* 02:30:00
+Persistent=true
+RandomizedDelaySec=10min
+
+[Install]
+WantedBy=carbonio-appserver.target
