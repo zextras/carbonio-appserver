@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver"
-pkgver="4.6.0"
+pkgver="4.6.1"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"
