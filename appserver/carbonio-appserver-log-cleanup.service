@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+[Unit]
+Description=Carbonio Appserver Log and Stack Trace Cleanup
+Documentation=https://docs.zextras.com/
+After=carbonio-appserver.target
+
+[Service]
+Type=oneshot
+User=zextras
+Group=zextras
+# The environment the zextras login shell (.bashrc) gives the scripts
+Environment=PATH=/opt/zextras/bin:/opt/zextras/common/lib/jvm/java/bin:/opt/zextras/common/bin:/opt/zextras/common/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=PERL5LIB="/opt/zextras/common/lib/perl5/x86_64-linux-gnu-thread-multi:/opt/zextras/common/lib/perl5/x86_64-linux-thread-multi:/opt/zextras/common/lib/perl5"
+ExecStart=/usr/bin/find /opt/zextras/mailboxd/logs/ -type f -name '*log*' -mtime +8 -delete
+ExecStart=/usr/bin/find /opt/zextras/log/ -type f -name 'stacktrace.*' -mtime +8 -delete
+Nice=10
+IOSchedulingClass=idle
